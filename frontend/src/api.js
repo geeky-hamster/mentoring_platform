@@ -33,7 +33,7 @@ export const onSessionExpired = (fn) => {
 };
 
 const http = axios.create({
-  baseURL: '/api/v1',
+  baseURL: import.meta.env.VITE_API_BASE || '/api/v1',
   withCredentials: true,
   timeout: 30000,
 });
@@ -66,7 +66,8 @@ function normalise(error) {
 
 async function refreshSession() {
   // Deliberately axios (not `http`) so a failing refresh cannot recurse.
-  const response = await axios.post('/api/v1/auth/refresh', null, {
+  const baseURL = import.meta.env.VITE_API_BASE || '/api/v1';
+  const response = await axios.post(`${baseURL}/auth/refresh`, null, {
     withCredentials: true,
     timeout: 20000,
   });
