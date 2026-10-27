@@ -1,0 +1,22 @@
+digraph deployment {
+  rankdir=TB; compound=true; splines=true;
+  graph [fontname="DejaVu Sans", fontsize=11, splines=ortho, nodesep=0.28, ranksep=0.5, pad=0.15, bgcolor=white];
+  node [fontname="DejaVu Sans", fontsize=10, shape=box, style="rounded,filled", fillcolor="#E3ECF7", color="#1F3A5F", penwidth=1.1, margin="0.12,0.07"];
+  edge [fontname="DejaVu Sans", fontsize=9, color="#44546A", arrowsize=0.7, fontcolor="#1F3A5F"];
+  subgraph cluster_dev { label="Developer machine"; style="rounded,filled"; fillcolor="#F4F6F9"; color="#B8C2D0";
+    vite [label="Vite dev server\nlocalhost:5173"]; flask [label="Flask dev server\nlocalhost:5000"]; pg [label="PostgreSQL 16\n(local or Docker)", shape=cylinder, fillcolor="#D9EEF1", color="#2A7F8E"];
+    vite -> flask [label="/api proxy"]; flask -> pg;
+  }
+  gh [label="GitHub\nrepository, pull requests,\ncode review", fillcolor="#FFFFFF"];
+  ci [label="CI workflow\nlint, pytest, Vitest,\nOpenAPI validation", fillcolor="#FBF0D9", color="#C9922B"];
+  subgraph cluster_prod { label="Production"; style="rounded,filled"; fillcolor="#F2FAF5"; color="#8FBFA2";
+    vercel [label="Vercel\nstatic SPA + /api rewrite", fillcolor="#DDF0E4", color="#1F6B3F"];
+    render [label="Render web service\nFlask + Gunicorn", fillcolor="#DDF0E4", color="#1F6B3F"];
+    job [label="Render cron job", fillcolor="#DDF0E4", color="#1F6B3F"];
+    mpg [label="Managed PostgreSQL\nautomated backups", shape=cylinder, fillcolor="#D9EEF1", color="#2A7F8E"];
+    vercel -> render [label="HTTPS"]; render -> mpg [label="TLS"]; job -> mpg;
+  }
+  flask -> gh [label="git push", ltail=cluster_dev, style=dashed];
+  gh -> ci; ci -> vercel [label="deploy main"];
+  ci -> render [label="deploy main"];
+}

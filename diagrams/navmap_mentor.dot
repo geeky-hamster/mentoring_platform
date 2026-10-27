@@ -1,0 +1,25 @@
+digraph nav_Mentor {
+  rankdir=TB;
+  graph [fontname="DejaVu Sans", fontsize=11, splines=ortho, nodesep=0.28, ranksep=0.5, pad=0.15, bgcolor=white];
+  node [fontname="DejaVu Sans", fontsize=10, shape=box, style="rounded,filled", fillcolor="#E3ECF7", color="#1F3A5F", penwidth=1.1, margin="0.12,0.07"];
+  edge [fontname="DejaVu Sans", fontsize=9, color="#44546A", arrowsize=0.7, fontcolor="#1F3A5F"];
+  splines=true; nodesep=0.35; ranksep=0.55;
+  p15 [label="15  Mentor dashboard", fillcolor="#DDF0E4"];
+  p16 [label="16  Incoming requests", fillcolor="#DDF0E4"];
+  p17 [label="17  Request details", fillcolor="#DDF0E4"];
+  p18 [label="18  My mentees /\nactive mentorships", fillcolor="#DDF0E4"];
+  p19 [label="19  Session\nand availability management", fillcolor="#DDF0E4"];
+  p20 [label="20  Mentor profile editing", fillcolor="#DDF0E4"];
+  p21 [label="21  Notifications (mentor)", fillcolor="#DDF0E4"];
+  p1 [label="1  Login\n(Public page)", style="rounded,dashed,filled", fillcolor="#FFFFFF", color="#6B7686"];
+  p15 -> p1 [label="Sign out (user menu)"];
+  p15 -> p16 [label="Review requests"];
+  p15 -> p19 [label="View schedule"];
+  p15 -> p20 [label="Edit profile"];
+  p16 -> p17 [label="View request"];
+  p17 -> p18 [label="Accept"];
+  p17 -> p16 [label="Decline"];
+  p17 -> p16 [label="Back to requests"];
+  p21 -> p16 [label="Open notification"];
+  sb [label="Sidebar on every mentor page:\n15  Mentor dashboard\n16  Incoming requests\n18  My mentees\n19  Session and availability management\n20  Mentor profile editing\n21  Notifications", shape=note, style=filled, fillcolor="#FFFFFF", color="#6B7686", fontsize=9];
+}

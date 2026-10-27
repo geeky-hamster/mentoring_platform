@@ -1,0 +1,14 @@
+stateDiagram-v2
+  direction LR
+  [*] --> pending: student submits (E24)
+  pending --> accepted: mentor accepts (E27)<br/>creates mentorship
+  pending --> declined: mentor declines (E28)
+  pending --> cancelled: student cancels (E29)
+  pending --> expired: 14 days, scheduled job
+  accepted --> [*]
+  declined --> [*]
+  cancelled --> [*]
+  expired --> [*]
+  note right of declined
+    30-day cooldown for the same pair
+  end note

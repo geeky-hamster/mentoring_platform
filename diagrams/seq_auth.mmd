@@ -1,0 +1,26 @@
+sequenceDiagram
+  autonumber
+  participant UI as React app
+  participant API as Flask API
+  participant DB as PostgreSQL
+  UI->>API: POST /api/v1/auth/login (E02)
+  API->>DB: Load user, verify password hash
+  API->>DB: INSERT refresh_token (hash, family_id)
+  API-->>UI: 200 access JWT (15 min) + refresh token
+  Note over UI: Access token kept in memory
+  UI->>API: GET /api/v1/... Bearer access
+  API-->>UI: 401 UNAUTHENTICATED (expired)
+  UI->>API: POST /api/v1/auth/refresh (E03)
+  API->>DB: Look up hash, check not used or revoked
+  alt valid
+    API->>DB: Mark used, INSERT rotated token (same family)
+    API-->>UI: 200 new access + new refresh
+    UI->>API: Retry original request
+  else replayed (REFRESH_REUSED)
+    API->>DB: Revoke whole family
+    API-->>UI: 401 REFRESH_REUSED
+    UI->>UI: Clear state, go to Login
+  end
+  UI->>API: POST /api/v1/auth/logout (E04)
+  API->>DB: Revoke token family
+  API-->>UI: 204

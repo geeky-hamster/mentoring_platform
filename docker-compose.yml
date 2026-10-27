@@ -1,0 +1,34 @@
+# Local development infrastructure for the mentoring platform.
+# Usage:  docker compose up -d
+# The API (backend/) and web app (frontend/) run natively for a fast dev loop.
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: mentoring-platform-db
+    environment:
+      POSTGRES_USER: mentoring
+      POSTGRES_PASSWORD: mentoring_dev_pw
+      POSTGRES_DB: mentoring
+      # postgres init args: trust the local network only
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mentoring -d mentoring"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  adminer:
+    image: adminer:latest
+    container_name: mentoring-platform-adminer
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:

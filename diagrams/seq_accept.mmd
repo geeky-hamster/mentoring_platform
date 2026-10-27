@@ -1,0 +1,25 @@
+sequenceDiagram
+  autonumber
+  actor M as Mentor
+  participant UI as React app
+  participant API as Flask API
+  participant DB as PostgreSQL
+  actor S as Student
+  M->>UI: Click Accept on request
+  UI->>API: POST /api/v1/mentoring-requests/{id}/accept (E27)
+  API->>API: Verify JWT, role = mentor, owns request
+  API->>DB: BEGIN
+  API->>DB: SELECT request FOR UPDATE
+  alt request not pending
+    API-->>UI: 409 INVALID_STATE_TRANSITION
+  else mentor at capacity
+    API-->>UI: 409 MENTOR_AT_CAPACITY
+  else valid
+    API->>DB: UPDATE request SET status = accepted
+    API->>DB: INSERT mentorship (active)
+    API->>DB: INSERT notification for student
+    API->>DB: COMMIT
+    API-->>UI: 200 request and mentorship
+    UI-->>M: Toast, redirect to My mentees
+    S-->>UI: Bell shows unread (poll E42)
+  end

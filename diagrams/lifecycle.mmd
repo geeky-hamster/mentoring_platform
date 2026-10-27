@@ -1,0 +1,20 @@
+flowchart LR
+  M1["M1-M4<br/>Mentor registers,<br/>completes profile,<br/>submits for review"]:::mentor --> A2{"A2<br/>Admin<br/>approves?"}:::admin
+  A2 -- "rejected,<br/>with note" --> M1
+  A2 -- approved --> VIS(["Mentor visible<br/>in search"]):::event
+  S1["S1-S3<br/>Student registers,<br/>completes<br/>onboarding profile"]:::student --> S4["S4-S5<br/>Discover mentors,<br/>view profile"]:::student
+  VIS --> S4
+  S4 --> S6["S6<br/>Submit<br/>request"]:::student
+  S6 --> M6{"M5-M6<br/>Mentor<br/>decides"}:::mentor
+  M6 -- "declined / cancelled /<br/>expired" --> S4
+  M6 -- accepted --> ACT(["S8<br/>Mentorship<br/>active"]):::event
+  ACT --> S9["S9, M8<br/>Schedule<br/>session"]:::both
+  S9 --> SES["S10, M8-M9<br/>Hold session,<br/>complete, give<br/>feedback"]:::both
+  SES -- "next session" --> S9
+  SES --> END(["S11, M7<br/>Mentorship<br/>ended"]):::event
+  ADM["A4 Admin can end<br/>any mentorship"]:::admin -.-> END
+  classDef student fill:#E3ECF7,stroke:#1F3A5F,color:#1F2937;
+  classDef mentor fill:#DDF0E4,stroke:#1F6B3F,color:#1F2937;
+  classDef admin fill:#FBF0D9,stroke:#C9922B,color:#1F2937;
+  classDef both fill:#EDE7F6,stroke:#5E4B8B,color:#1F2937;
+  classDef event fill:#D9EEF1,stroke:#2A7F8E,color:#1F2937;

@@ -1,0 +1,31 @@
+flowchart TB
+  X0["X0 Sign in<br/>seeded admin account"] --> DASH["A5 Dashboard<br/>KPIs, review queue, stale requests"]
+  DASH --> A2["A2 Open applicant<br/>from review queue"]
+  DASH --> A3["A3 Users<br/>search and filter"]
+  DASH --> A4["A4 Mentorships<br/>and requests"]
+  DASH --> A6["A6 Analytics"]
+  DASH --> A7["A7 Catalogues<br/>skills and interests"]
+  A2 --> CK{"Checklist<br/>complete?"}
+  CK -- "yes" --> AP["Approve:<br/>profile becomes visible"]
+  CK -- "no" --> RJ["Reject with note,<br/>mentor sees the note"]
+  A3 --> SU{"Action?"}
+  SU -- "suspend" --> SP["Account suspended:<br/>refresh tokens revoked,<br/>pending requests cancelled"]
+  SU -- "reactivate" --> RA["Account active again"]
+  A4 --> EN{"End a<br/>mentorship?"}
+  EN -- "yes, reason required" --> EM["Mentorship ended,<br/>both parties notified"]
+  A6 --> EXP["Export CSV<br/>aggregates only"]
+  A7 --> DUP{"Name<br/>exists?"}
+  DUP -- "yes: 409 DUPLICATE_ENTRY" --> A7
+  DUP -- "no" --> CT["Entry added, renamed<br/>or retired"]
+  AP --> AUD(["A8 Audit entry written<br/>and reviewable"])
+  RJ --> AUD
+  SP --> AUD
+  RA --> AUD
+  EM --> AUD
+  CT --> AUD
+  classDef gate fill:#FBF0D9,stroke:#C9922B,color:#1F2937;
+  classDef bad fill:#F8E1E4,stroke:#8E2A37,color:#1F2937;
+  classDef ev fill:#D9EEF1,stroke:#2A7F8E,color:#1F2937;
+  class CK,SU,EN,DUP gate;
+  class RJ,SP bad;
+  class AP,RA,EM,CT,AUD ev;

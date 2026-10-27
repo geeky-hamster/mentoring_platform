@@ -1,0 +1,38 @@
+digraph nav_Student {
+  rankdir=TB;
+  graph [fontname="DejaVu Sans", fontsize=11, splines=ortho, nodesep=0.28, ranksep=0.5, pad=0.15, bgcolor=white];
+  node [fontname="DejaVu Sans", fontsize=10, shape=box, style="rounded,filled", fillcolor="#E3ECF7", color="#1F3A5F", penwidth=1.1, margin="0.12,0.07"];
+  edge [fontname="DejaVu Sans", fontsize=9, color="#44546A", arrowsize=0.7, fontcolor="#1F3A5F"];
+  splines=true; nodesep=0.35; ranksep=0.55;
+  p5 [label="5  Student onboarding\nand profile setup", fillcolor="#E3ECF7"];
+  p6 [label="6  Student dashboard", fillcolor="#E3ECF7"];
+  p7 [label="7  Mentor discovery\nand search", fillcolor="#E3ECF7"];
+  p8 [label="8  Mentor details", fillcolor="#E3ECF7"];
+  p9 [label="9  Send mentoring request", fillcolor="#E3ECF7"];
+  p10 [label="10  My mentoring requests", fillcolor="#E3ECF7"];
+  p11 [label="11  Mentorship details", fillcolor="#E3ECF7"];
+  p12 [label="12  Session history\nand feedback", fillcolor="#E3ECF7"];
+  p13 [label="13  Edit student profile", fillcolor="#E3ECF7"];
+  p14 [label="14  Notifications (student)", fillcolor="#E3ECF7"];
+  p1 [label="1  Login\n(Public page)", style="rounded,dashed,filled", fillcolor="#FFFFFF", color="#6B7686"];
+  p5 -> p6 [label="Finish"];
+  p6 -> p5 [label="Complete profile"];
+  p6 -> p1 [label="Sign out (user menu)"];
+  p6 -> p7 [label="See all recommendations"];
+  p6 -> p10 [label="View my requests"];
+  p6 -> p11 [label="Open mentorship"];
+  p6 -> p14 [label="View notifications"];
+  p7 -> p8 [label="View profile"];
+  p7 -> p9 [label="Request mentoring"];
+  p8 -> p9 [label="Request mentoring"];
+  p8 -> p7 [label="Back to results"];
+  p9 -> p13 [label="Edit profile"];
+  p9 -> p8 [label="Cancel"];
+  p10 -> p11 [label="Open mentorship"];
+  p10 -> p7 [label="Find a mentor"];
+  p11 -> p12 [label="Sessions and feedback tab"];
+  p11 -> p8 [label="View mentor profile"];
+  p12 -> p11 [label="Back to overview"];
+  p14 -> p10 [label="Open notification"];
+  sb [label="Sidebar on every student page:\n6  Student dashboard\n7  Mentor discovery and search\n10  My mentoring requests\n11  Mentorship details\n14  Notifications\n13  Edit student profile", shape=note, style=filled, fillcolor="#FFFFFF", color="#6B7686", fontsize=9];
+}

@@ -1,0 +1,8 @@
+stateDiagram-v2
+  direction LR
+  [*] --> scheduled: booked in an open slot (E34)
+  scheduled --> completed: mentor marks done (E37)
+  scheduled --> cancelled: either party cancels (E37)
+  scheduled --> cancelled: mentorship ended
+  completed --> [*]: feedback allowed 14 days
+  cancelled --> [*]: slot released

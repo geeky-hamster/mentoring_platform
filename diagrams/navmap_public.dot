@@ -1,0 +1,27 @@
+digraph nav_Public {
+  rankdir=LR;
+  graph [fontname="DejaVu Sans", fontsize=11, splines=ortho, nodesep=0.28, ranksep=0.5, pad=0.15, bgcolor=white];
+  node [fontname="DejaVu Sans", fontsize=10, shape=box, style="rounded,filled", fillcolor="#E3ECF7", color="#1F3A5F", penwidth=1.1, margin="0.12,0.07"];
+  edge [fontname="DejaVu Sans", fontsize=9, color="#44546A", arrowsize=0.7, fontcolor="#1F3A5F"];
+  splines=true; nodesep=0.35; ranksep=0.55;
+  p1 [label="1  Login", fillcolor="#FFFFFF"];
+  p2 [label="2  Registration", fillcolor="#FFFFFF"];
+  p3 [label="3  Forgot /\nreset password", fillcolor="#FFFFFF"];
+  p4 [label="4  Access denied / error", fillcolor="#FFFFFF"];
+  p5 [label="5  Student onboarding\nand profile setup\n(Student page)", style="rounded,dashed,filled", fillcolor="#FFFFFF", color="#6B7686"];
+  p6 [label="6  Student dashboard\n(Student page)", style="rounded,dashed,filled", fillcolor="#FFFFFF", color="#6B7686"];
+  p15 [label="15  Mentor dashboard\n(Mentor page)", style="rounded,dashed,filled", fillcolor="#FFFFFF", color="#6B7686"];
+  p20 [label="20  Mentor profile editing\n(Mentor page)", style="rounded,dashed,filled", fillcolor="#FFFFFF", color="#6B7686"];
+  p22 [label="22  Admin dashboard\n(Admin page)", style="rounded,dashed,filled", fillcolor="#FFFFFF", color="#6B7686"];
+  p1 -> p3 [label="Forgot password"];
+  p1 -> p2 [label="Create account"];
+  p2 -> p1 [label="Already registered? Sign in"];
+  p3 -> p1 [label="Back to sign in"];
+  p4 -> p1 [label="Sign in again"];
+  p1 -> p6 [label="student sign-in", style=dashed];
+  p1 -> p15 [label="mentor sign-in", style=dashed];
+  p1 -> p22 [label="admin sign-in", style=dashed];
+  p2 -> p5 [label="student registers", style=dashed];
+  p2 -> p20 [label="mentor registers", style=dashed];
+  p4 -> p6 [label="own dashboard", style=dashed];
+}

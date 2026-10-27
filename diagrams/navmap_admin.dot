@@ -1,0 +1,18 @@
+digraph nav_Admin {
+  rankdir=TB;
+  graph [fontname="DejaVu Sans", fontsize=11, splines=ortho, nodesep=0.28, ranksep=0.5, pad=0.15, bgcolor=white];
+  node [fontname="DejaVu Sans", fontsize=10, shape=box, style="rounded,filled", fillcolor="#E3ECF7", color="#1F3A5F", penwidth=1.1, margin="0.12,0.07"];
+  edge [fontname="DejaVu Sans", fontsize=9, color="#44546A", arrowsize=0.7, fontcolor="#1F3A5F"];
+  splines=true; nodesep=0.35; ranksep=0.55;
+  p22 [label="22  Admin dashboard", fillcolor="#FBF0D9"];
+  p23 [label="23  User management", fillcolor="#FBF0D9"];
+  p24 [label="24  Mentor approval /\nreview", fillcolor="#FBF0D9"];
+  p25 [label="25  Mentorship management", fillcolor="#FBF0D9"];
+  p26 [label="26  Programme analytics\nand reports", fillcolor="#FBF0D9"];
+  p1 [label="1  Login\n(Public page)", style="rounded,dashed,filled", fillcolor="#FFFFFF", color="#6B7686"];
+  p22 -> p1 [label="Sign out (user menu)"];
+  p22 -> p24 [label="Review applications"];
+  p22 -> p25 [label="View stale requests"];
+  p22 -> p26 [label="Open analytics"];
+  sb [label="Sidebar on every admin page:\n22  Admin dashboard\n23  User management\n24  Mentor approval\n25  Mentorship management\n26  Programme analytics and reports", shape=note, style=filled, fillcolor="#FFFFFF", color="#6B7686", fontsize=9];
+}

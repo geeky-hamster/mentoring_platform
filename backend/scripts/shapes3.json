@@ -1,0 +1,845 @@
+{
+ "student dashboard": {
+  "data": {
+   "profile_completed": false,
+   "pending_requests": 1,
+   "active_mentorships": 0,
+   "next_session": null,
+   "unread_notifications": 0
+  }
+ },
+ "mentor dashboard": {
+  "data": {
+   "profile_status": "approved",
+   "pending_requests": 1,
+   "active_mentees": 0,
+   "max_active_mentees": 3,
+   "upcoming_sessions": [],
+   "rating_summary": null,
+   "unread_notifications": 0
+  }
+ },
+ "recommended mentors": {
+  "data": [
+   {
+    "mentor": {
+     "mentor_id": "b07c2017-e48e-4efb-8fa7-9e08fd75532c",
+     "full_name": "Meera Nair",
+     "professional_title": "Research Engineer",
+     "organisation": "Example Research Lab",
+     "experience_years": 5,
+     "mentor_type": "alumni",
+     "top_skills": [
+      "Python",
+      "Machine Learning",
+      "Statistics"
+     ],
+     "interests": [
+      "Data Science",
+      "Higher Studies"
+     ],
+     "accepting_mentees": true
+    },
+    "match_score": 76.7,
+    "breakdown": {
+     "skills": 53.3,
+     "interests": 100.0,
+     "availability": 100.0
+    },
+    "reasons": [
+     "Covers 1 of your focus skills at a higher level and matches 1 focus skill at your level",
+     "Advises on 2 of your 2 career interests (all of them)",
+     "Wide availability: 8 open slots in the next 14 days"
+    ]
+   },
+   {
+    "mentor": {
+     "mentor_id": "787d44a9-9681-4927-a984-fc48080ede48",
+     "full_name": "Karthik Rao",
+     "professional_title": "Software Engineer",
+     "organisation": "Example Software Ltd",
+     "experience_years": 4,
+     "mentor_type": "alumni",
+     "top_skills": [
+      "SQL",
+      "Python"
+     ],
+     "interests": [
+      "Higher Studies"
+     ],
+     "accepting_mentees": true
+    },
+    "match_score": 61.7,
+    "breakdown": {
+     "skills": 53.3,
+     "interests": 50.0,
+     "availability": 100.0
+    },
+    "reasons": [
+     "Covers 1 of your focus skills at a higher level and matches 1 focus skill at your level",
+     "Advises on 1 of your 2 career interests",
+     "Wide availability: 8 open slots in the next 14 days"
+    ]
+   },
+   {
+    "mentor": {
+     "mentor_id": "d1080faf-61a7-46be-aa89-e987895946f5",
+     "full_name": "Walk Mentor",
+     "professional_title": "Data Scientist",
+     "organisation": "Walk Org",
+     "experience_years": 7,
+     "mentor_type": "alumni",
+     "top_skills": [
+      "Python",
+      "SQL"
+     ],
+     "interests": [
+      "Data Science"
+     ],
+     "accepting_mentees": true
+    },
+    "match_score": 59.0,
+    "breakdown": {
+     "skills": 66.7,
+     "interests": 50.0,
+     "availability": 53.3
+    },
+    "reasons": [
+     "Covers 2 of your focus skills at a higher level",
+     "Advises on 1 of your 2 career interests",
+     "3 mentee spots free, 2 open slots in the next 14 days"
+    ]
+   }
+  ],
+  "meta": {
+   "page": 1,
+   "page_size": 3,
+   "total": 8,
+   "total_pages": 3
+  }
+ },
+ "mentor directory": {
+  "data": [
+   {
+    "mentor_id": "68283691-b1af-4eea-bf75-1809c6f8fb58",
+    "full_name": "Probe Mentor",
+    "professional_title": "Probe Title",
+    "organisation": "Probe Org",
+    "experience_years": 5,
+    "mentor_type": "alumni",
+    "top_skills": [
+     "Academic Writing"
+    ],
+    "interests": [
+     "Civil Services"
+    ],
+    "accepting_mentees": true,
+    "open_slots_14d": 1
+   },
+   {
+    "mentor_id": "d1080faf-61a7-46be-aa89-e987895946f5",
+    "full_name": "Walk Mentor",
+    "professional_title": "Data Scientist",
+    "organisation": "Walk Org",
+    "experience_years": 7,
+    "mentor_type": "alumni",
+    "top_skills": [
+     "Python",
+     "SQL"
+    ],
+    "interests": [
+     "Data Science"
+    ],
+    "accepting_mentees": true,
+    "open_slots_14d": 2
+   }
+  ],
+  "meta": {
+   "page": 1,
+   "page_size": 2,
+   "total": 10,
+   "total_pages": 5
+  }
+ },
+ "student profile": {
+  "data": {
+   "student_profile_id": "58e41f50-3a9e-4647-8121-566782d6ddc9",
+   "user_id": "67641369-90f6-4aec-9bf4-9b927a96f505",
+   "full_name": "Asha Menon",
+   "programme_stage": "bsc_degree",
+   "expected_graduation_year": 2027,
+   "career_goals": "Grow into an industry role that matches my interests and build a portfolio.",
+   "guidance_needs": "Project guidance, interview preparation and course selection.",
+   "bio": "Programme student eager to learn from mentors who have walked this path.",
+   "profile_completed": true,
+   "skills": [
+    {
+     "skill_id": "6d2cf730-77b0-4e7c-bf41-64608ac7e501",
+     "skill_name": "Machine Learning",
+     "category": "Data",
+     "proficiency_level": "beginner",
+     "is_focus": true
+    },
+    {
+     "skill_id": "447ab3d0-df98-4d30-bc27-9db463662029",
+     "skill_name": "Python",
+     "category": "Programming",
+     "proficiency_level": "intermediate",
+     "is_focus": true
+    },
+    {
+     "skill_id": "d31f81b2-dfe7-418b-adb2-1859f6282c7e",
+     "skill_name": "SQL",
+     "category": "Data",
+     "proficiency_level": "beginner",
+     "is_focus": true
+    }
+   ],
+   "interests": [
+    {
+     "interest_id": "e89ac75c-6d2c-43be-843f-ee8237c73260",
+     "interest_name": "Data Science"
+    },
+    {
+     "interest_id": "1577b96a-aefb-42f2-b5be-8d39cef4d0d2",
+     "interest_name": "Higher Studies"
+    }
+   ]
+  }
+ },
+ "mentor profile": {
+  "data": {
+   "mentor_id": "7523af6f-badc-460c-a6cb-46a0b4df0a9f",
+   "full_name": "Rohan Iyer",
+   "mentor_type": "alumni",
+   "professional_title": "Senior Data Scientist",
+   "organisation": "Example Analytics Pvt Ltd",
+   "experience_years": 6,
+   "graduation_year": 2016,
+   "bio": "Senior Data Scientist at Example Analytics Pvt Ltd. Happy to help programme students with projects and careers.",
+   "is_available": true,
+   "max_active_mentees": 3,
+   "profile_status": "approved",
+   "expertise": [
+    {
+     "skill_id": "6d2cf730-77b0-4e7c-bf41-64608ac7e501",
+     "skill_name": "Machine Learning",
+     "category": "Data",
+     "expertise_level": "intermediate"
+    },
+    {
+     "skill_id": "447ab3d0-df98-4d30-bc27-9db463662029",
+     "skill_name": "Python",
+     "category": "Programming",
+     "expertise_level": "advanced"
+    },
+    {
+     "skill_id": "d31f81b2-dfe7-418b-adb2-1859f6282c7e",
+     "skill_name": "SQL",
+     "category": "Data",
+     "expertise_level": "advanced"
+    }
+   ],
+   "interests": [
+    {
+     "interest_id": "e89ac75c-6d2c-43be-843f-ee8237c73260",
+     "interest_name": "Data Science"
+    }
+   ],
+   "rating": null,
+   "linkedin_url": "https://www.linkedin.com/example",
+   "review_note": null,
+   "reviewed_at": "2026-10-16T20:17:11.590331+00:00"
+  }
+ },
+ "mentor availability": {
+  "data": [
+   {
+    "slot_id": "ea3332ed-518a-40d1-adec-5de1effd811f",
+    "start_time": "2026-10-29T13:00:00+00:00",
+    "end_time": "2026-10-29T14:00:00+00:00",
+    "is_available": true,
+    "booked": false
+   },
+   {
+    "slot_id": "6f14cec1-cd52-4eb5-8420-14eaaee2b712",
+    "start_time": "2026-10-30T13:00:00+00:00",
+    "end_time": "2026-10-30T14:00:00+00:00",
+    "is_available": true,
+    "booked": false
+   },
+   {
+    "slot_id": "ae34727f-c45a-4851-aafe-aaa431ab1687",
+    "start_time": "2026-11-02T13:00:00+00:00",
+    "end_time": "2026-11-02T14:00:00+00:00",
+    "is_available": true,
+    "booked": false
+   },
+   {
+    "slot_id": "ab0640b5-0860-4d4f-a9c4-365da03f197e",
+    "start_time": "2026-11-03T13:00:00+00:00",
+    "end_time": "2026-11-03T14:00:00+00:00",
+    "is_available": true,
+    "booked": false
+   },
+   {
+    "slot_id": "5c6640f9-033c-49fd-abdf-6dccb2708873",
+    "start_time": "2026-11-04T13:00:00+00:00",
+    "end_time": "2026-11-04T14:00:00+00:00",
+    "is_available": true,
+    "booked": false
+   },
+   {
+    "slot_id": "03dde037-cbaf-4eec-911f-1bf0b301067d",
+    "start_time": "2026-11-05T13:00:00+00:00",
+    "end_time": "2026-11-05T14:00:00+00:00",
+    "is_available": true,
+    "booked": false
+   },
+   {
+    "slot_id": "4e66625d-2fd7-4b03-87db-297e2124d783",
+    "start_time": "2026-11-06T13:00:00+00:00",
+    "end_time": "2026-11-06T14:00:00+00:00",
+    "is_available": true,
+    "booked": false
+   },
+   {
+    "slot_id": "78cdffb0-0ba9-4d68-9431-c1dc2ac8338e",
+    "start_time": "2026-11-09T13:00:00+00:00",
+    "end_time": "2026-11-09T14:00:00+00:00",
+    "is_available": true,
+    "booked": false
+   },
+   {
+    "slot_id": "31e22bf6-5d63-4248-ab01-7cd4034a1f08",
+    "start_time": "2026-11-10T13:00:00+00:00",
+    "end_time": "2026-11-10T14:00:00+00:00",
+    "is_available": true,
+    "booked": false
+   },
+   {
+    "slot_id": "7fcbd3c9-5557-4372-91f9-535a6c05bb6e",
+    "start_time": "2026-11-11T13:00:00+00:00",
+    "end_time": "2026-11-11T14:00:00+00:00",
+    "is_available": true,
+    "booked": false
+   }
+  ],
+  "meta": {
+   "page": 1,
+   "page_size": 10,
+   "total": 10,
+   "total_pages": 1
+  }
+ },
+ "my mentorships student": {
+  "data": [],
+  "meta": {
+   "page": 1,
+   "page_size": 10,
+   "total": 0,
+   "total_pages": 1
+  }
+ },
+ "my requests student": {
+  "data": [
+   {
+    "request_id": "1d6f6e3a-042a-497d-8169-13a04935ce98",
+    "student_id": "67641369-90f6-4aec-9bf4-9b927a96f505",
+    "mentor_id": "7523af6f-badc-460c-a6cb-46a0b4df0a9f",
+    "career_goal": "Move into a data science role after graduation and need portfolio advice.",
+    "message": "Hello Rohan, your path into industry matches what I am aiming for.",
+    "status": "pending",
+    "status_reason": null,
+    "created_at": "2026-10-25T20:17:11.590331+00:00",
+    "responded_at": null,
+    "expires_at": "2026-11-08T20:17:11.590331+00:00",
+    "student_name": "Asha Menon",
+    "mentor_name": "Rohan Iyer"
+   }
+  ],
+  "meta": {
+   "page": 1,
+   "page_size": 10,
+   "total": 1,
+   "total_pages": 1
+  }
+ },
+ "my requests mentor": {
+  "data": [
+   {
+    "request_id": "1d6f6e3a-042a-497d-8169-13a04935ce98",
+    "student_id": "67641369-90f6-4aec-9bf4-9b927a96f505",
+    "mentor_id": "7523af6f-badc-460c-a6cb-46a0b4df0a9f",
+    "career_goal": "Move into a data science role after graduation and need portfolio advice.",
+    "message": "Hello Rohan, your path into industry matches what I am aiming for.",
+    "status": "pending",
+    "status_reason": null,
+    "created_at": "2026-10-25T20:17:11.590331+00:00",
+    "responded_at": null,
+    "expires_at": "2026-11-08T20:17:11.590331+00:00",
+    "student_name": "Asha Menon",
+    "mentor_name": "Rohan Iyer"
+   }
+  ],
+  "meta": {
+   "page": 1,
+   "page_size": 10,
+   "total": 1,
+   "total_pages": 1
+  }
+ },
+ "notifications": {
+  "data": [],
+  "meta": {
+   "page": 1,
+   "page_size": 2,
+   "total": 0,
+   "total_pages": 1,
+   "unread_count": 0
+  }
+ },
+ "admin pending mentors": {
+  "data": [
+   {
+    "mentor_id": "8ddc6ff1-32d5-464b-a261-227e5c0e3ee4",
+    "full_name": "Lakshmi Pillai",
+    "mentor_type": "alumni",
+    "professional_title": "Data Analyst",
+    "organisation": "Example Health",
+    "experience_years": 3,
+    "graduation_year": 2016,
+    "bio": "Data Analyst at Example Health. Happy to help programme students with projects and careers.",
+    "is_available": true,
+    "max_active_mentees": 3,
+    "profile_status": "pending_review",
+    "expertise": [
+     {
+      "skill_id": "447ab3d0-df98-4d30-bc27-9db463662029",
+      "skill_name": "Python",
+      "category": "Programming",
+      "expertise_level": "advanced"
+     },
+     {
+      "skill_id": "d31f81b2-dfe7-418b-adb2-1859f6282c7e",
+      "skill_name": "SQL",
+      "category": "Data",
+      "expertise_level": "advanced"
+     }
+    ],
+    "interests": [
+     {
+      "interest_id": "e89ac75c-6d2c-43be-843f-ee8237c73260",
+      "interest_name": "Data Science"
+     }
+    ],
+    "rating": null,
+    "linkedin_url": "https://www.linkedin.com/example",
+    "review_note": null,
+    "reviewed_at": null,
+    "email": "lakshmi.pillai@example.org",
+    "account_status": "active"
+   },
+   {
+    "mentor_id": "4cb0d8fa-d6be-48e6-95f5-16bb9378d578",
+    "full_name": "Walk Mentor",
+    "mentor_type": "alumni",
+    "professional_title": "Data Scientist",
+    "organisation": "Walk Org",
+    "experience_years": 7,
+    "graduation_year": 2015,
+    "bio": "Walk-through mentor profile.",
+    "is_available": true,
+    "max_active_mentees": 3,
+    "profile_status": "pending_review",
+    "expertise": [
+     {
+      "skill_id": "447ab3d0-df98-4d30-bc27-9db463662029",
+      "skill_name": "Python",
+      "category": "Programming",
+      "expertise_level": "advanced"
+     },
+     {
+      "skill_id": "d31f81b2-dfe7-418b-adb2-1859f6282c7e",
+      "skill_name": "SQL",
+      "category": "Data",
+      "expertise_level": "advanced"
+     }
+    ],
+    "interests": [
+     {
+      "interest_id": "e89ac75c-6d2c-43be-843f-ee8237c73260",
+      "interest_name": "Data Science"
+     }
+    ],
+    "rating": null,
+    "linkedin_url": null,
+    "review_note": null,
+    "reviewed_at": null,
+    "email": "walk.mentor.214368@example.org",
+    "account_status": "active"
+   },
+   {
+    "mentor_id": "e100a283-dd16-4de1-a9c4-a51d2db4d7f0",
+    "full_name": "Walk Mentor",
+    "mentor_type": "alumni",
+    "professional_title": "Data Scientist",
+    "organisation": "Walk Org",
+    "experience_years": 7,
+    "graduation_year": 2015,
+    "bio": "Walk-through mentor profile.",
+    "is_available": true,
+    "max_active_mentees": 3,
+    "profile_status": "pending_review",
+    "expertise": [
+     {
+      "skill_id": "447ab3d0-df98-4d30-bc27-9db463662029",
+      "skill_name": "Python",
+      "category": "Programming",
+      "expertise_level": "advanced"
+     },
+     {
+      "skill_id": "d31f81b2-dfe7-418b-adb2-1859f6282c7e",
+      "skill_name": "SQL",
+      "category": "Data",
+      "expertise_level": "advanced"
+     }
+    ],
+    "interests": [
+     {
+      "interest_id": "e89ac75c-6d2c-43be-843f-ee8237c73260",
+      "interest_name": "Data Science"
+     }
+    ],
+    "rating": null,
+    "linkedin_url": null,
+    "review_note": null,
+    "reviewed_at": null,
+    "email": "walk.mentor.63b888@example.org",
+    "account_status": "active"
+   },
+   {
+    "mentor_id": "3ee58910-645e-4d30-89e1-282bc73e908a",
+    "full_name": "Walk Mentor",
+    "mentor_type": "alumni",
+    "professional_title": "Data Scientist",
+    "organisation": "Walk Org",
+    "experience_years": 7,
+    "graduation_year": 2015,
+    "bio": "Walk-through mentor profile.",
+    "is_available": true,
+    "max_active_mentees": 3,
+    "profile_status": "pending_review",
+    "expertise": [
+     {
+      "skill_id": "447ab3d0-df98-4d30-bc27-9db463662029",
+      "skill_name": "Python",
+      "category": "Programming",
+      "expertise_level": "advanced"
+     },
+     {
+      "skill_id": "d31f81b2-dfe7-418b-adb2-1859f6282c7e",
+      "skill_name": "SQL",
+      "category": "Data",
+      "expertise_level": "advanced"
+     }
+    ],
+    "interests": [
+     {
+      "interest_id": "e89ac75c-6d2c-43be-843f-ee8237c73260",
+      "interest_name": "Data Science"
+     }
+    ],
+    "rating": null,
+    "linkedin_url": null,
+    "review_note": null,
+    "reviewed_at": null,
+    "email": "walk.mentor.2e993c@example.org",
+    "account_status": "active"
+   }
+  ],
+  "meta": {
+   "page": 1,
+   "page_size": 10,
+   "total": 4,
+   "total_pages": 1
+  }
+ },
+ "analytics overview": {
+  "data": {
+   "period": {
+    "from": "2026-01-01",
+    "to": "2026-12-31"
+   },
+   "users": {
+    "students": 14,
+    "mentors": 26,
+    "admins": 1
+   },
+   "mentors": {
+    "approved": 11,
+    "pending_review": 4,
+    "rejected": 0,
+    "suspended": 0,
+    "draft": 11,
+    "capacity_total": 31,
+    "utilisation": 0.129
+   },
+   "requests": {
+    "total": 11,
+    "pending": 3,
+    "accepted": 6,
+    "declined": 2,
+    "cancelled": 0,
+    "expired": 0,
+    "acceptance_rate": 0.75,
+    "median_response_hours": 0.0
+   },
+   "mentorships": {
+    "active": 4,
+    "completed": 2,
+    "ended": 0,
+    "with_three_or_more_sessions": 0
+   },
+   "sessions": {
+    "scheduled": 3,
+    "completed": 2,
+    "cancelled": 4,
+    "completion_rate": 0.333
+   },
+   "feedback": {
+    "count": 3,
+    "average_rating": 4.67,
+    "rating_distribution": {
+     "1": 0,
+     "2": 0,
+     "3": 0,
+     "4": 1,
+     "5": 2
+    }
+   }
+  }
+ },
+ "analytics trends": {
+  "data": {
+   "metric": "sessions",
+   "interval": "month",
+   "series": [
+    {
+     "period_start": "2026-01-01",
+     "value": 0
+    },
+    {
+     "period_start": "2026-02-01",
+     "value": 0
+    },
+    {
+     "period_start": "2026-03-01",
+     "value": 0
+    },
+    {
+     "period_start": "2026-04-01",
+     "value": 0
+    },
+    {
+     "period_start": "2026-05-01",
+     "value": 0
+    },
+    {
+     "period_start": "2026-06-01",
+     "value": 0
+    },
+    {
+     "period_start": "2026-07-01",
+     "value": 0
+    },
+    {
+     "period_start": "2026-08-01",
+     "value": 0
+    },
+    {
+     "period_start": "2026-09-01",
+     "value": 0
+    },
+    {
+     "period_start": "2026-10-01",
+     "value": 9
+    },
+    {
+     "period_start": "2026-11-01",
+     "value": 0
+    },
+    {
+     "period_start": "2026-12-01",
+     "value": 0
+    }
+   ]
+  }
+ },
+ "mentor public profile": {
+  "data": {
+   "mentor_id": "68283691-b1af-4eea-bf75-1809c6f8fb58",
+   "full_name": "Probe Mentor",
+   "mentor_type": "alumni",
+   "professional_title": "Probe Title",
+   "organisation": "Probe Org",
+   "experience_years": 5,
+   "graduation_year": 2015,
+   "bio": "Probe mentor bio.",
+   "is_available": true,
+   "max_active_mentees": 3,
+   "profile_status": "approved",
+   "expertise": [
+    {
+     "skill_id": "d3338c46-1a9e-4dee-9ff5-4eb0688c2b5e",
+     "skill_name": "Academic Writing",
+     "category": "Academic",
+     "expertise_level": "advanced"
+    }
+   ],
+   "interests": [
+    {
+     "interest_id": "322f6314-f30d-4d40-b38e-895b5fea521f",
+     "interest_name": "Civil Services"
+    }
+   ],
+   "rating": null,
+   "linkedin_url": null,
+   "open_slots_14d": 1,
+   "free_mentee_spots": 2
+  }
+ },
+ "request detail mentor": {
+  "data": {
+   "request_id": "1d6f6e3a-042a-497d-8169-13a04935ce98",
+   "student_id": "67641369-90f6-4aec-9bf4-9b927a96f505",
+   "mentor_id": "7523af6f-badc-460c-a6cb-46a0b4df0a9f",
+   "career_goal": "Move into a data science role after graduation and need portfolio advice.",
+   "message": "Hello Rohan, your path into industry matches what I am aiming for.",
+   "status": "pending",
+   "status_reason": null,
+   "created_at": "2026-10-25T20:17:11.590331+00:00",
+   "responded_at": null,
+   "expires_at": "2026-11-08T20:17:11.590331+00:00",
+   "student_name": "Asha Menon",
+   "mentor_name": "Rohan Iyer",
+   "student_summary": {
+    "programme_stage": "bsc_degree",
+    "expected_graduation_year": 2027,
+    "bio": "Programme student eager to learn from mentors who have walked this path.",
+    "career_goals": "Grow into an industry role that matches my interests and build a portfolio.",
+    "guidance_needs": "Project guidance, interview preparation and course selection.",
+    "skills": [
+     {
+      "skill_id": "6d2cf730-77b0-4e7c-bf41-64608ac7e501",
+      "skill_name": "Machine Learning",
+      "category": "Data",
+      "proficiency_level": "beginner",
+      "is_focus": true
+     },
+     {
+      "skill_id": "447ab3d0-df98-4d30-bc27-9db463662029",
+      "skill_name": "Python",
+      "category": "Programming",
+      "proficiency_level": "intermediate",
+      "is_focus": true
+     },
+     {
+      "skill_id": "d31f81b2-dfe7-418b-adb2-1859f6282c7e",
+      "skill_name": "SQL",
+      "category": "Data",
+      "proficiency_level": "beginner",
+      "is_focus": true
+     }
+    ],
+    "interests": [
+     "Data Science",
+     "Higher Studies"
+    ]
+   }
+  }
+ },
+ "mentorship detail (admin)": {
+  "data": {
+   "mentorship_id": "a5b9da1d-a257-462f-80d0-d317c5684dd2",
+   "request_id": "1246e4a3-82d2-4fca-b028-a646f8aa9f90",
+   "student_id": "2e292fec-d740-4b8c-80b9-7f06cfa59d0c",
+   "mentor_id": "68283691-b1af-4eea-bf75-1809c6f8fb58",
+   "status": "active",
+   "started_at": "2026-10-27T01:59:01.782363+00:00",
+   "ended_at": null,
+   "end_reason": null,
+   "student_name": "Probe Student",
+   "mentor_name": "Probe Mentor",
+   "career_goal": "Probe goal long enough 493984.",
+   "originating_request": {
+    "request_id": "1246e4a3-82d2-4fca-b028-a646f8aa9f90",
+    "status": "accepted"
+   },
+   "sessions_completed": 0,
+   "sessions_scheduled": 1,
+   "last_session_at": "2026-10-28T09:00:00+00:00"
+  }
+ },
+ "mentorship sessions (admin)": {
+  "data": [
+   {
+    "session_id": "5ca38d30-f426-4f15-9240-65c5837456e5",
+    "mentorship_id": "a5b9da1d-a257-462f-80d0-d317c5684dd2",
+    "slot_id": "a7744e8a-5ef3-489b-9e56-41823537961a",
+    "student_id": "2e292fec-d740-4b8c-80b9-7f06cfa59d0c",
+    "mentor_id": "68283691-b1af-4eea-bf75-1809c6f8fb58",
+    "scheduled_start": "2026-10-28T09:00:00+00:00",
+    "scheduled_end": "2026-10-28T10:00:00+00:00",
+    "meeting_mode": "online",
+    "meeting_link": null,
+    "status": "scheduled",
+    "notes": null,
+    "my_feedback_submitted": false
+   }
+  ],
+  "meta": {
+   "page": 1,
+   "page_size": 10,
+   "total": 1,
+   "total_pages": 1
+  }
+ },
+ "session detail": {
+  "data": {
+   "session_id": "5ca38d30-f426-4f15-9240-65c5837456e5",
+   "mentorship_id": "a5b9da1d-a257-462f-80d0-d317c5684dd2",
+   "slot_id": "a7744e8a-5ef3-489b-9e56-41823537961a",
+   "student_id": "2e292fec-d740-4b8c-80b9-7f06cfa59d0c",
+   "mentor_id": "68283691-b1af-4eea-bf75-1809c6f8fb58",
+   "scheduled_start": "2026-10-28T09:00:00+00:00",
+   "scheduled_end": "2026-10-28T10:00:00+00:00",
+   "meeting_mode": "online",
+   "meeting_link": null,
+   "status": "scheduled",
+   "notes": null,
+   "my_feedback_submitted": false,
+   "student_name": "Probe Student",
+   "mentor_name": "Probe Mentor"
+  }
+ },
+ "session feedback": {
+  "data": [],
+  "meta": {
+   "page": 1,
+   "page_size": 10,
+   "total": 0,
+   "total_pages": 1
+  }
+ },
+ "sessions mine (mentor)": {
+  "data": [],
+  "meta": {
+   "page": 1,
+   "page_size": 10,
+   "total": 0,
+   "total_pages": 1
+  }
+ },
+ "admin catalogue usage": null
+}

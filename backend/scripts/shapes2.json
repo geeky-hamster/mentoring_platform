@@ -1,0 +1,240 @@
+{
+ "login": {
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJtZW50b3JpbmctcGxhdGZvcm0iLCJzdWIiOiI2ZGE3N2I3NC0yYjNjLTRlMTEtYTIyNC1lNzNmZTIxOGQ1ZTYiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3OTMwNjYzNjIsImV4cCI6MTc5MzA2NzI2MiwianRpIjoiZWM5YWQ4NDNhNDExNTczYyIsImZhbSI6IjEyNTJmMDU1LWE4NzktNDIzNi04ZDgxLWQ5ZWM3ZTNlOGZlMSJ9.YGMRrTe8YJEbJSJick-kdfiqthMtFFiAFQNlO--7llU",
+  "token_type": "Bearer",
+  "expires_in": 900,
+  "user": {
+   "user_id": "6da77b74-2b3c-4e11-a224-e73fe218d5e6",
+   "full_name": "Programme Administrator",
+   "email": "admin@example.org",
+   "role": "admin",
+   "account_status": "active",
+   "email_verified": false,
+   "profile_completed": false,
+   "profile_status": "draft",
+   "created_at": "2026-10-26T20:15:49.629213+00:00"
+  }
+ },
+ "student me profile": {
+  "data": {
+   "student_profile_id": "0b5045cd-b730-4a6f-b974-158ce2d1e541",
+   "user_id": "2e292fec-d740-4b8c-80b9-7f06cfa59d0c",
+   "full_name": "Probe Student",
+   "programme_stage": "bsc_degree",
+   "expected_graduation_year": 2028,
+   "career_goals": "Probe goals for the student profile summary.",
+   "guidance_needs": null,
+   "bio": null,
+   "profile_completed": true,
+   "skills": [
+    {
+     "skill_id": "d3338c46-1a9e-4dee-9ff5-4eb0688c2b5e",
+     "skill_name": "Academic Writing",
+     "category": "Academic",
+     "proficiency_level": "beginner",
+     "is_focus": true
+    }
+   ],
+   "interests": [
+    {
+     "interest_id": "322f6314-f30d-4d40-b38e-895b5fea521f",
+     "interest_name": "Civil Services"
+    }
+   ]
+  }
+ },
+ "request detail (student view)": {
+  "data": {
+   "request_id": "1246e4a3-82d2-4fca-b028-a646f8aa9f90",
+   "student_id": "2e292fec-d740-4b8c-80b9-7f06cfa59d0c",
+   "mentor_id": "68283691-b1af-4eea-bf75-1809c6f8fb58",
+   "career_goal": "Probe goal long enough 493984.",
+   "message": null,
+   "status": "pending",
+   "status_reason": null,
+   "created_at": "2026-10-27T01:59:01.740135+00:00",
+   "responded_at": null,
+   "expires_at": "2026-11-10T01:59:27.342103+00:00",
+   "student_name": "Probe Student",
+   "mentor_name": "Probe Mentor",
+   "student_summary": {
+    "programme_stage": "bsc_degree",
+    "expected_graduation_year": 2028,
+    "bio": null,
+    "career_goals": "Probe goals for the student profile summary.",
+    "guidance_needs": null,
+    "skills": [
+     {
+      "skill_id": "d3338c46-1a9e-4dee-9ff5-4eb0688c2b5e",
+      "skill_name": "Academic Writing",
+      "category": "Academic",
+      "proficiency_level": "beginner",
+      "is_focus": true
+     }
+    ],
+    "interests": [
+     "Civil Services"
+    ]
+   }
+  }
+ },
+ "accept response": {
+  "data": {
+   "request": {
+    "request_id": "1246e4a3-82d2-4fca-b028-a646f8aa9f90",
+    "student_id": "2e292fec-d740-4b8c-80b9-7f06cfa59d0c",
+    "mentor_id": "68283691-b1af-4eea-bf75-1809c6f8fb58",
+    "career_goal": "Probe goal long enough 493984.",
+    "message": null,
+    "status": "accepted",
+    "status_reason": null,
+    "created_at": "2026-10-27T01:59:01.740135+00:00",
+    "responded_at": "2026-10-27T01:59:27.381300+00:00",
+    "expires_at": "2026-11-10T01:59:27.342103+00:00",
+    "student_name": "Probe Student"
+   },
+   "mentorship": {
+    "mentorship_id": "a5b9da1d-a257-462f-80d0-d317c5684dd2",
+    "request_id": "1246e4a3-82d2-4fca-b028-a646f8aa9f90",
+    "student_id": "2e292fec-d740-4b8c-80b9-7f06cfa59d0c",
+    "mentor_id": "68283691-b1af-4eea-bf75-1809c6f8fb58",
+    "status": "active",
+    "started_at": "2026-10-27T01:59:01.782363+00:00",
+    "ended_at": null,
+    "end_reason": null
+   }
+  }
+ },
+ "mentorship detail (student)": {
+  "data": {
+   "mentorship_id": "a5b9da1d-a257-462f-80d0-d317c5684dd2",
+   "request_id": "1246e4a3-82d2-4fca-b028-a646f8aa9f90",
+   "student_id": "2e292fec-d740-4b8c-80b9-7f06cfa59d0c",
+   "mentor_id": "68283691-b1af-4eea-bf75-1809c6f8fb58",
+   "status": "active",
+   "started_at": "2026-10-27T01:59:01.782363+00:00",
+   "ended_at": null,
+   "end_reason": null,
+   "student_name": "Probe Student",
+   "mentor_name": "Probe Mentor",
+   "career_goal": "Probe goal long enough 493984.",
+   "originating_request": {
+    "request_id": "1246e4a3-82d2-4fca-b028-a646f8aa9f90",
+    "status": "accepted"
+   },
+   "sessions_completed": 0,
+   "sessions_scheduled": 0,
+   "last_session_at": null
+  }
+ },
+ "book session response": {
+  "data": {
+   "session_id": "5ca38d30-f426-4f15-9240-65c5837456e5",
+   "mentorship_id": "a5b9da1d-a257-462f-80d0-d317c5684dd2",
+   "slot_id": "a7744e8a-5ef3-489b-9e56-41823537961a",
+   "student_id": "2e292fec-d740-4b8c-80b9-7f06cfa59d0c",
+   "mentor_id": "68283691-b1af-4eea-bf75-1809c6f8fb58",
+   "scheduled_start": "2026-10-28T09:00:00+00:00",
+   "scheduled_end": "2026-10-28T10:00:00+00:00",
+   "meeting_mode": "online",
+   "meeting_link": null,
+   "status": "scheduled",
+   "notes": null,
+   "my_feedback_submitted": false,
+   "student_name": "Probe Student",
+   "mentor_name": "Probe Mentor"
+  }
+ },
+ "session detail": {
+  "data": {
+   "session_id": "5ca38d30-f426-4f15-9240-65c5837456e5",
+   "mentorship_id": "a5b9da1d-a257-462f-80d0-d317c5684dd2",
+   "slot_id": "a7744e8a-5ef3-489b-9e56-41823537961a",
+   "student_id": "2e292fec-d740-4b8c-80b9-7f06cfa59d0c",
+   "mentor_id": "68283691-b1af-4eea-bf75-1809c6f8fb58",
+   "scheduled_start": "2026-10-28T09:00:00+00:00",
+   "scheduled_end": "2026-10-28T10:00:00+00:00",
+   "meeting_mode": "online",
+   "meeting_link": null,
+   "status": "scheduled",
+   "notes": null,
+   "my_feedback_submitted": false,
+   "student_name": "Probe Student",
+   "mentor_name": "Probe Mentor"
+  }
+ },
+ "mentorship sessions list": {
+  "data": [
+   {
+    "session_id": "5ca38d30-f426-4f15-9240-65c5837456e5",
+    "mentorship_id": "a5b9da1d-a257-462f-80d0-d317c5684dd2",
+    "slot_id": "a7744e8a-5ef3-489b-9e56-41823537961a",
+    "student_id": "2e292fec-d740-4b8c-80b9-7f06cfa59d0c",
+    "mentor_id": "68283691-b1af-4eea-bf75-1809c6f8fb58",
+    "scheduled_start": "2026-10-28T09:00:00+00:00",
+    "scheduled_end": "2026-10-28T10:00:00+00:00",
+    "meeting_mode": "online",
+    "meeting_link": null,
+    "status": "scheduled",
+    "notes": null,
+    "my_feedback_submitted": false
+   }
+  ],
+  "meta": {
+   "page": 1,
+   "page_size": 10,
+   "total": 1,
+   "total_pages": 1
+  }
+ },
+ "session feedback list": {
+  "data": [],
+  "meta": {
+   "page": 1,
+   "page_size": 10,
+   "total": 0,
+   "total_pages": 1
+  }
+ },
+ "mentor own availability": {
+  "data": [
+   {
+    "slot_id": "a7744e8a-5ef3-489b-9e56-41823537961a",
+    "start_time": "2026-10-28T09:00:00+00:00",
+    "end_time": "2026-10-28T10:00:00+00:00",
+    "is_available": true,
+    "booked": true
+   }
+  ],
+  "meta": {
+   "page": 1,
+   "page_size": 1,
+   "total": 1,
+   "total_pages": 1
+  }
+ },
+ "student sessions mine": {
+  "data": [
+   {
+    "session_id": "5ca38d30-f426-4f15-9240-65c5837456e5",
+    "mentorship_id": "a5b9da1d-a257-462f-80d0-d317c5684dd2",
+    "slot_id": "a7744e8a-5ef3-489b-9e56-41823537961a",
+    "student_id": "2e292fec-d740-4b8c-80b9-7f06cfa59d0c",
+    "mentor_id": "68283691-b1af-4eea-bf75-1809c6f8fb58",
+    "scheduled_start": "2026-10-28T09:00:00+00:00",
+    "scheduled_end": "2026-10-28T10:00:00+00:00",
+    "meeting_mode": "online",
+    "meeting_link": null,
+    "status": "scheduled",
+    "notes": null,
+    "my_feedback_submitted": false
+   }
+  ],
+  "meta": {
+   "page": 1,
+   "page_size": 10,
+   "total": 1,
+   "total_pages": 1
+  }
+ }
+}

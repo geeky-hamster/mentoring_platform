@@ -1,0 +1,11 @@
+stateDiagram-v2
+  direction LR
+  [*] --> draft: mentor registers
+  draft --> pending_review: submit (E15)
+  pending_review --> approved: admin approves (E48)
+  pending_review --> rejected: admin rejects with note (E48)
+  rejected --> draft: mentor edits
+  approved --> pending_review: significant edit
+  approved --> suspended: admin suspends
+  suspended --> approved: admin reinstates
+  approved --> [*]: account deactivated

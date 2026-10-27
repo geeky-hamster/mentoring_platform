@@ -1,0 +1,26 @@
+sequenceDiagram
+  autonumber
+  actor S as Student
+  participant UI as React app
+  participant API as Flask API
+  participant DB as PostgreSQL
+  S->>UI: Open Schedule session
+  UI->>API: GET /api/v1/mentors/{id}/availability (E21)
+  API->>DB: SELECT open future slots
+  API-->>UI: 200 slots
+  S->>UI: Choose slot, mode, link, Confirm
+  UI->>API: POST /api/v1/mentorships/{id}/sessions (E34)
+  API->>API: Verify JWT, student is party, mentorship active
+  API->>DB: BEGIN
+  API->>DB: INSERT session (slot_id, student_id, mentor_id, time range)
+  alt unique slot or EXCLUDE constraint fires
+    DB-->>API: constraint violation
+    API->>DB: ROLLBACK
+    API-->>UI: 409 SLOT_UNAVAILABLE or SESSION_CONFLICT
+    UI-->>S: Error banner, reload slots
+  else inserted
+    API->>DB: INSERT notification for mentor
+    API->>DB: COMMIT
+    API-->>UI: 201 session
+    UI-->>S: Toast, session in list
+  end

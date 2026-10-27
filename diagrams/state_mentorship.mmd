@@ -1,0 +1,14 @@
+stateDiagram-v2
+  direction LR
+  [*] --> active: request accepted (E27)
+  active --> ended: ended early by either party or admin (E32)
+  active --> completed: natural conclusion, goal met (E32)
+  ended --> [*]
+  completed --> [*]
+  note right of active
+    Sessions can be scheduled only here
+  end note
+  note right of ended
+    Scheduled sessions are cancelled;
+    history stays read-only
+  end note

@@ -1,0 +1,151 @@
+# =============================================================================
+# IITM Mentoring Platform - .gitignore
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Python / Backend
+# -----------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.venv/
+venv/
+env/
+ENV/
+backend/.venv/
+backend/__pycache__/
+backend/app/__pycache__/
+backend/app/**/__pycache__/
+backend/scripts/__pycache__/
+*.egg-info/
+dist/
+build/
+pip-wheel-metadata/
+.eggs/
+.mypy_cache/
+.ruff_cache/
+
+# -----------------------------------------------------------------------------
+# Node.js / Frontend
+# -----------------------------------------------------------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.vite/
+frontend/coverage/
+*.local
+
+# -----------------------------------------------------------------------------
+# Environment & Secrets
+# -----------------------------------------------------------------------------
+.env
+.env.local
+.env.*.local
+backend/.env
+frontend/.env
+*.pem
+*.key
+*.crt
+secrets/
+config/secrets.yaml
+
+# -----------------------------------------------------------------------------
+# Database
+# -----------------------------------------------------------------------------
+*.sqlite
+*.sqlite3
+*.db
+*.dump
+postgresql/data/
+docker/volumes/postgres/
+
+# -----------------------------------------------------------------------------
+# Logs
+# -----------------------------------------------------------------------------
+*.log
+logs/
+backend/logs/
+backend/uvicorn.out.log
+backend/uvicorn.err.log
+frontend/logs/
+*.out
+*.err
+
+# -----------------------------------------------------------------------------
+# IDE & Editor
+# -----------------------------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.bak
+.DS_Store
+Thumbs.db
+*.sublime-project
+*.sublime-workspace
+.vs/
+*.code-workspace
+
+# -----------------------------------------------------------------------------
+# Docker
+# -----------------------------------------------------------------------------
+.docker/
+docker-compose.override.yml
+docker-compose.local.yml
+
+# -----------------------------------------------------------------------------
+# Build Artifacts & Reports
+# -----------------------------------------------------------------------------
+*.pdf
+report.pdf
+backend/report_build/
+src/report_build/
+/home/claude/report_build/
+
+# -----------------------------------------------------------------------------
+# Testing / Playwright
+# -----------------------------------------------------------------------------
+playwright-report/
+test-results/
+.tmp/
+/tmp/opencode/
+C:\Users\*\AppData\Local\Temp\opencode\
+
+# -----------------------------------------------------------------------------
+# Generated / Design Artifacts (from src/ generators)
+# -----------------------------------------------------------------------------
+api-spec.yaml
+database/schema.sql
+database/db_test_results.txt
+database/db_concurrency_result.txt
+diagrams/*.png
+diagrams/*.mmd.png
+diagrams/*.dot.png
+matching_reference.py
+
+# -----------------------------------------------------------------------------
+# Postman / API Testing
+# -----------------------------------------------------------------------------
+postman/*.json.backup
+postman/environments/*.json
+
+# -----------------------------------------------------------------------------
+# OS & Misc
+# -----------------------------------------------------------------------------
+*.orig
+*.rej
+.cache/
+*.tmp
+*.temp

@@ -1,0 +1,1049 @@
+{
+  "info": {
+    "name": "Mentoring Platform API",
+    "description": "Complete Postman collection for the IITM Student Mentoring and Career Support Platform. Implements all 58 endpoints from the OpenAPI 3.0.3 contract (api-spec.yaml).\n\nBase URL: http://localhost:8000/api/v1\n\nAuthentication: JWT Bearer tokens with HTTP-only refresh cookie rotation.\n- Run Login first to populate accessToken and refreshToken environment variables\n- Tokens auto-refresh on 401 via pre-request script\n- Refresh cookie path: /api/v1/auth\n\nResponse Envelopes:\n- Success: { data: {...}, meta: {page, page_size, total, total_pages} }\n- Error: { error: {code, message, details[], request_id} }\n\nRate Limits (per IP):\n- Login/Register: 10/min\n- Forgot Password: 5/min\n- Mentoring Requests: 10/min\n\nDemo Accounts (password: correct-horse-battery-9):\n- Admin: admin@example.org / admin-password-123\n- Student: asha.menon@example.org\n- Mentor: rohan.iyer@example.org\n- Mentor: meera.nair@example.org\n- Mentor: karthik.rao@example.org\n- Mentor (at capacity): divya.sharma@example.org\n- Mentor (paused): sanjay.patel@example.org\n- Mentor (pending): lakshmi.pillai@example.org\n- Student (has mentorship): vikram.shah@example.org\n- Student (has mentorship): ravi.kumar@example.org",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "mentoring-platform",
+    "_postman_id": "mentoring-platform-api-v1"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refreshToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "requestId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Auto-refresh token on 401 - runs before each request",
+          "const pm = require('postman-collection');",
+          "",
+          "// Store original request for retry",
+          "if (!pm.request.headers.has('Authorization') && pm.environment.get('accessToken')) {",
+          "  pm.request.headers.add({ key: 'Authorization', value: 'Bearer ' + pm.environment.get('accessToken') });",
+          "}"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Capture request_id for debugging",
+          "const res = pm.response;",
+          "if (res.headers.has('x-request-id')) {",
+          "  pm.environment.set('requestId', res.headers.get('x-request-id'));",
+          "}",
+          "",
+          "// Auto-extract access token from login/refresh responses",
+          "if (pm.request.url.path.includes('/auth/login') || pm.request.url.path.includes('/auth/refresh')) {",
+          "  try {",
+          "    const json = res.json();",
+          "    if (json.data?.access_token) {",
+          "      pm.environment.set('accessToken', json.data.access_token);",
+          "    }",
+          "    // Refresh token is in HTTP-only cookie, not in response body",
+          "  } catch (e) { /* ignore */ }",
+          "}",
+          "",
+          "// Validate response envelope structure",
+          "pm.test('Response has correct envelope', () => {",
+          "  const json = res.json();",
+          "  if (res.code >= 400) {",
+          "    pm.expect(json).to.have.property('error');",
+          "    pm.expect(json.error).to.have.property('code');",
+          "    pm.expect(json.error).to.have.property('message');",
+          "    pm.expect(json.error).to.have.property('request_id');",
+          "  } else {",
+          "    pm.expect(json).to.have.property('data');",
+          "    pm.expect(json).to.have.property('meta');",
+          "  }",
+          "});"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register Student",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/register", "host": ["{{baseUrl}}"], "path": ["auth", "register"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"New Student\",\n  \"email\": \"student.new@example.org\",\n  \"password\": \"secure-password-123\",\n  \"role\": \"student\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register Mentor",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/register", "host": ["{{baseUrl}}"], "path": ["auth", "register"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"New Mentor\",\n  \"email\": \"mentor.new@example.org\",\n  \"password\": \"secure-password-123\",\n  \"role\": \"mentor\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"asha.menon@example.org\",\n  \"password\": \"correct-horse-battery-9\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.data?.access_token) {",
+                  "  pm.environment.set('accessToken', json.data.access_token);",
+                  "  console.log('Access token stored');",
+                  "}",
+                  "// Refresh token is set as HTTP-only cookie automatically"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/refresh", "host": ["{{baseUrl}}"], "path": ["auth", "refresh"] },
+            "body": { "mode": "raw", "raw": "{}" }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/logout", "host": ["{{baseUrl}}"], "path": ["auth", "logout"] },
+            "body": { "mode": "raw", "raw": "{}" }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.environment.unset('accessToken');",
+                  "console.log('Logged out, token cleared');"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/forgot-password", "host": ["{{baseUrl}}"], "path": ["auth", "forgot-password"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"asha.menon@example.org\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/reset-password", "host": ["{{baseUrl}}"], "path": ["auth", "reset-password"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n  \"new_password\": \"new-secure-password-456\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/change-password", "host": ["{{baseUrl}}"], "path": ["auth", "change-password"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"current_password\": \"correct-horse-battery-9\",\n  \"new_password\": \"updated-password-789\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/users/me", "host": ["{{baseUrl}}"], "path": ["users", "me"] }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Student",
+      "item": [
+        {
+          "name": "Get Own Profile",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/students/me/profile", "host": ["{{baseUrl}}"], "path": ["students", "me", "profile"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/students/me/profile", "host": ["{{baseUrl}}"], "path": ["students", "me", "profile"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Asha Menon\",\n  \"programme_stage\": \"bsc_degree\",\n  \"expected_graduation_year\": 2027,\n  \"career_goals\": \"Build a data engineering portfolio and prepare for internship interviews.\",\n  \"guidance_needs\": \"Project reviews, portfolio feedback and interview practice.\",\n  \"bio\": \"Second-year student exploring data engineering and analytics. Updated via API.\",\n  \"skills\": [\n    { \"skill_id\": \"SKILL_PYTHON_UUID\", \"proficiency_level\": \"intermediate\", \"is_focus\": true },\n    { \"skill_id\": \"SKILL_SQL_UUID\", \"proficiency_level\": \"beginner\", \"is_focus\": false }\n  ],\n  \"interest_ids\": [\"INTEREST_DATA_SCIENCE_UUID\"]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Search Mentors",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/mentors?page=1&page_size=10&q=Data&accepting=true&sort=experience",
+              "host": ["{{baseUrl}}"],
+              "path": ["mentors"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "page_size", "value": "10" },
+                { "key": "q", "value": "Data" },
+                { "key": "accepting", "value": "true" },
+                { "key": "sort", "value": "experience" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Recommended Mentors",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/mentors/recommended?page=1&page_size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["mentors", "recommended"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "page_size", "value": "10" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Mentor Public Profile",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/mentors/ROHAN_IYER_UUID", "host": ["{{baseUrl}}"], "path": ["mentors", "ROHAN_IYER_UUID"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Send Mentoring Request",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/mentoring-requests", "host": ["{{baseUrl}}"], "path": ["mentoring-requests"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mentor_id\": \"ROHAN_IYER_UUID\",\n  \"career_goal\": \"Transition into a data engineering role with a strong portfolio and interview readiness.\",\n  \"message\": \"I admire your work at the data platform team. Would value guidance on building production-grade pipelines.\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List My Requests",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/mentoring-requests/mine?page=1&page_size=20&status=pending",
+              "host": ["{{baseUrl}}"],
+              "path": ["mentoring-requests", "mine"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "page_size", "value": "20" },
+                { "key": "status", "value": "pending" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel Request",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/mentoring-requests/REQUEST_UUID", "host": ["{{baseUrl}}"], "path": ["mentoring-requests", "REQUEST_UUID"] }
+          },
+          "response": []
+        },
+        {
+          "name": "List My Mentorships",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/mentorships", "host": ["{{baseUrl}}"], "path": ["mentorships"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Mentorship Detail",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/mentorships/MENTORSHIP_UUID", "host": ["{{baseUrl}}"], "path": ["mentorships", "MENTORSHIP_UUID"] }
+          },
+          "response": []
+        },
+        {
+          "name": "End Mentorship",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/mentorships/MENTORSHIP_UUID", "host": ["{{baseUrl}}"], "path": ["mentorships", "MENTORSHIP_UUID"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"completed\",\n  \"reason\": \"Goals achieved, mentorship completed successfully.\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Mentorship Sessions",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/mentorships/MENTORSHIP_UUID/sessions", "host": ["{{baseUrl}}"], "path": ["mentorships", "MENTORSHIP_UUID", "sessions"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Book Session",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/sessions", "host": ["{{baseUrl}}"], "path": ["sessions"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"slot_id\": \"SLOT_UUID\",\n  \"meeting_mode\": \"online\",\n  \"meeting_link\": \"https://meet.example.com/abc-def-ghi\",\n  \"notes\": \"Portfolio review agenda: 1) Project walkthrough 2) Architecture feedback 3) Next steps\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel Session (Student)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/sessions/SESSION_UUID", "host": ["{{baseUrl}}"], "path": ["sessions", "SESSION_UUID"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"cancelled\",\n  \"cancel_reason\": \"Schedule conflict, will rebook next week.\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Submit Feedback",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/feedback", "host": ["{{baseUrl}}"], "path": ["feedback"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"session_id\": \"SESSION_UUID\",\n  \"rating\": 5,\n  \"comments\": \"Excellent session! The mentor provided actionable feedback on my pipeline architecture.\"\n}"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Mentor",
+      "item": [
+        {
+          "name": "Get Own Profile",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/mentors/me/profile", "host": ["{{baseUrl}}"], "path": ["mentors", "me", "profile"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Profile (Save Draft)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/mentors/me/profile", "host": ["{{baseUrl}}"], "path": ["mentors", "me", "profile"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Rohan Iyer\",\n  \"mentor_type\": \"alumni\",\n  \"professional_title\": \"Senior Data Engineer\",\n  \"organisation\": \"TechCorp\",\n  \"experience_years\": 8,\n  \"graduation_year\": 2016,\n  \"linkedin_url\": \"https://linkedin.com/in/rohanyer\",\n  \"bio\": \"Building scalable data platforms. Helping students bridge academic and industry skills.\",\n  \"max_active_mentees\": 3,\n  \"is_available\": true,\n  \"expertise\": [\n    { \"skill_id\": \"SKILL_PYTHON_UUID\", \"expertise_level\": \"expert\" },\n    { \"skill_id\": \"SKILL_SQL_UUID\", \"expertise_level\": \"advanced\" },\n    { \"skill_id\": \"SKILL_AWS_UUID\", \"expertise_level\": \"expert\" }\n  ],\n  \"interest_ids\": [\"INTEREST_DATA_SCIENCE_UUID\", \"INTEREST_SOFTWARE_ENG_UUID\"]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Submit for Review",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/mentors/me/profile", "host": ["{{baseUrl}}"], "path": ["mentors", "me", "profile"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"submit_for_review\": true\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Dashboard",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/mentors/me/dashboard", "host": ["{{baseUrl}}"], "path": ["mentors", "me", "dashboard"] }
+          },
+          "response": []
+        },
+        {
+          "name": "List Incoming Requests",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/mentoring-requests/mine?page=1&page_size=20", "host": ["{{baseUrl}}"], "path": ["mentoring-requests", "mine"], "query": [{ "key": "page", "value": "1" }, { "key": "page_size", "value": "20" }] }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Request Detail",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/mentoring-requests/REQUEST_UUID", "host": ["{{baseUrl}}"], "path": ["mentoring-requests", "REQUEST_UUID"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Accept Request",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/mentoring-requests/REQUEST_UUID/accept", "host": ["{{baseUrl}}"], "path": ["mentoring-requests", "REQUEST_UUID", "accept"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Decline Request",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/mentoring-requests/REQUEST_UUID/decline", "host": ["{{baseUrl}}"], "path": ["mentoring-requests", "REQUEST_UUID", "decline"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"At capacity this term. Please apply again next semester.\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Mentorships",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/mentorships", "host": ["{{baseUrl}}"], "path": ["mentorships"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Mentorship Detail",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/mentorships/MENTORSHIP_UUID", "host": ["{{baseUrl}}"], "path": ["mentorships", "MENTORSHIP_UUID"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Close Mentorship",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/mentorships/MENTORSHIP_UUID", "host": ["{{baseUrl}}"], "path": ["mentorships", "MENTORSHIP_UUID"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"completed\",\n  \"reason\": \"Mentorship goals achieved. Student ready for independent work.\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List All Sessions",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/sessions", "host": ["{{baseUrl}}"], "path": ["sessions"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Complete Session",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/sessions/SESSION_UUID", "host": ["{{baseUrl}}"], "path": ["sessions", "SESSION_UUID"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"completed\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel Session (Mentor)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/sessions/SESSION_UUID", "host": ["{{baseUrl}}"], "path": ["sessions", "SESSION_UUID"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"cancelled\",\n  \"cancel_reason\": \"Emergency conflict, will reschedule.\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Edit Session",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/sessions/SESSION_UUID", "host": ["{{baseUrl}}"], "path": ["sessions", "SESSION_UUID"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"meeting_link\": \"https://meet.example.com/new-link\",\n  \"notes\": \"Updated agenda: Added section on deployment strategies.\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Submit Feedback",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/feedback", "host": ["{{baseUrl}}"], "path": ["feedback"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"session_id\": \"SESSION_UUID\",\n  \"rating\": 4,\n  \"comments\": \"Student showed good progress. Recommended deeper dive into streaming architectures.\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Availability",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/mentors/me/availability?from=2026-10-27T00:00:00Z&to=2026-11-10T00:00:00Z&page_size=50",
+              "host": ["{{baseUrl}}"],
+              "path": ["mentors", "me", "availability"],
+              "query": [
+                { "key": "from", "value": "2026-10-27T00:00:00Z" },
+                { "key": "to", "value": "2026-11-10T00:00:00Z" },
+                { "key": "page_size", "value": "50" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Slots (Single)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/mentors/me/availability", "host": ["{{baseUrl}}"], "path": ["mentors", "me", "availability"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"slots\": [\n    { \"start_time\": \"2026-11-05T10:00:00Z\", \"end_time\": \"2026-11-05T11:00:00Z\" },\n    { \"start_time\": \"2026-11-07T14:00:00Z\", \"end_time\": \"2026-11-07T15:00:00Z\" }\n  ]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Slots (Weekly Recurrence)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/mentors/me/availability", "host": ["{{baseUrl}}"], "path": ["mentors", "me", "availability"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"recurrence\": {\n    \"weekdays\": [0, 2],\n    \"weeks\": 4,\n    \"start_time\": \"18:00\",\n    \"end_time\": \"19:00\",\n    \"zone\": \"Asia/Kolkata\"\n  }\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Edit Slot",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/mentors/me/availability/SLOT_UUID", "host": ["{{baseUrl}}"], "path": ["mentors", "me", "availability", "SLOT_UUID"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"start_time\": \"2026-11-05T11:00:00Z\",\n  \"end_time\": \"2026-11-05T12:00:00Z\",\n  \"is_available\": true\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Slot",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/mentors/me/availability/SLOT_UUID", "host": ["{{baseUrl}}"], "path": ["mentors", "me", "availability", "SLOT_UUID"] }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Get Dashboard",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/dashboard",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "dashboard"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Users",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/users?page=1&page_size=20&q=student&account_status=active",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "users"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "page_size", "value": "20" },
+                { "key": "q", "value": "student" },
+                { "key": "account_status", "value": "active" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User Status",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/admin/users/USER_UUID/status", "host": ["{{baseUrl}}"], "path": ["admin", "users", "USER_UUID", "status"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"account_status\": \"suspended\",\n  \"reason\": \"Policy violation: inappropriate conduct in sessions.\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Mentor Applications",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/mentors?page=1&page_size=20&profile_status=pending_review",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "mentors"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "page_size", "value": "20" },
+                { "key": "profile_status", "value": "pending_review" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Mentor Application Detail",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/admin/mentors/MENTOR_UUID", "host": ["{{baseUrl}}"], "path": ["admin", "mentors", "MENTOR_UUID"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Approve Mentor",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/admin/mentors/MENTOR_UUID/approval", "host": ["{{baseUrl}}"], "path": ["admin", "mentors", "MENTOR_UUID", "approval"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"decision\": \"approve\",\n  \"note\": \"Profile complete, expertise verified, references checked.\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reject Mentor",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/admin/mentors/MENTOR_UUID/approval", "host": ["{{baseUrl}}"], "path": ["admin", "mentors", "MENTOR_UUID", "approval"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"decision\": \"reject\",\n  \"note\": \"Expertise does not match directory requirements. Missing production experience.\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Suspend Mentor",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/admin/mentors/MENTOR_UUID/approval", "host": ["{{baseUrl}}"], "path": ["admin", "mentors", "MENTOR_UUID", "approval"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"decision\": \"suspend\",\n  \"note\": \"Temporary suspension pending investigation.\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List All Mentorships",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/mentorships?page=1&page_size=20&status=active",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "mentorships"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "page_size", "value": "20" },
+                { "key": "status", "value": "active" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Mentorship Detail (Admin)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/admin/mentorships/MENTORSHIP_UUID", "host": ["{{baseUrl}}"], "path": ["admin", "mentorships", "MENTORSHIP_UUID"] }
+          },
+          "response": []
+        },
+        {
+          "name": "End Mentorship (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/admin/mentorships/MENTORSHIP_UUID", "host": ["{{baseUrl}}"], "path": ["admin", "mentorships", "MENTORSHIP_UUID"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"ended\",\n  \"reason\": \"Administrative closure: mentor account suspended.\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List All Requests",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/mentoring-requests?page=1&page_size=20&status=pending&older_than_days=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "mentoring-requests"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "page_size", "value": "20" },
+                { "key": "status", "value": "pending" },
+                { "key": "older_than_days", "value": "10" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Analytics Overview",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/analytics/overview?from=2026-10-01&to=2026-10-27",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "analytics", "overview"],
+              "query": [
+                { "key": "from", "value": "2026-10-01" },
+                { "key": "to", "value": "2026-10-27" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Analytics Trends",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/analytics/trends?metric=sessions&interval=week&from=2026-10-01&to=2026-10-27",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "analytics", "trends"],
+              "query": [
+                { "key": "metric", "value": "sessions" },
+                { "key": "interval", "value": "week" },
+                { "key": "from", "value": "2026-10-01" },
+                { "key": "to", "value": "2026-10-27" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Export CSV (Requests)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/analytics/export?report=requests&from=2026-10-01&to=2026-10-27",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "analytics", "export"],
+              "query": [
+                { "key": "report", "value": "requests" },
+                { "key": "from", "value": "2026-10-01" },
+                { "key": "to", "value": "2026-10-27" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Audit Logs",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/audit-logs?page=1&page_size=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "audit-logs"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "page_size", "value": "20" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Skills Catalogue - List",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/skills?page=1&page_size=50&include_inactive=false&with_usage=true",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "skills"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "page_size", "value": "50" },
+                { "key": "include_inactive", "value": "false" },
+                { "key": "with_usage", "value": "true" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Skills Catalogue - Add",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/admin/skills", "host": ["{{baseUrl}}"], "path": ["admin", "skills"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skill_name\": \"Rust\",\n  \"category\": \"Programming Languages\",\n  \"description\": \"Systems programming language focused on safety and concurrency.\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Skills Catalogue - Edit",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/admin/skills/SKILL_UUID", "host": ["{{baseUrl}}"], "path": ["admin", "skills", "SKILL_UUID"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skill_name\": \"Rust (Systems)\",\n  \"category\": \"Programming Languages\",\n  \"description\": \"Systems programming language focused on safety, concurrency, and performance.\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Skills Catalogue - Retire",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/admin/skills/SKILL_UUID/retire", "host": ["{{baseUrl}}"], "path": ["admin", "skills", "SKILL_UUID", "retire"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Skills Catalogue - Reactivate",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/admin/skills/SKILL_UUID/reactivate", "host": ["{{baseUrl}}"], "path": ["admin", "skills", "SKILL_UUID", "reactivate"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Interests Catalogue - List",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/career-interests?page=1&page_size=50&include_inactive=false",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "career-interests"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "page_size", "value": "50" },
+                { "key": "include_inactive", "value": "false" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Interests Catalogue - Add",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/admin/career-interests", "host": ["{{baseUrl}}"], "path": ["admin", "career-interests"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"interest_name\": \"DevOps Engineering\",\n  \"description\": \"Infrastructure automation, CI/CD, cloud platforms, and site reliability.\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Interests Catalogue - Edit",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/admin/career-interests/INTEREST_UUID", "host": ["{{baseUrl}}"], "path": ["admin", "career-interests", "INTEREST_UUID"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"interest_name\": \"DevOps & Platform Engineering\",\n  \"description\": \"Infrastructure automation, CI/CD, cloud platforms, site reliability, and platform engineering.\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Interests Catalogue - Retire",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/admin/carear-interests/INTEREST_UUID/retire", "host": ["{{baseUrl}}"], "path": ["admin", "career-interests", "INTEREST_UUID", "retire"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Interests Catalogue - Reactivate",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/admin/career-interests/INTEREST_UUID/reactivate", "host": ["{{baseUrl}}"], "path": ["admin", "career-interests", "INTEREST_UUID", "reactivate"] }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Catalogues (Public)",
+      "item": [
+        {
+          "name": "List Skills",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/skills?page=1&page_size=50&q=Python",
+              "host": ["{{baseUrl}}"],
+              "path": ["skills"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "page_size", "value": "50" },
+                { "key": "q", "value": "Python" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Career Interests",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/career-interests?page=1&page_size=50",
+              "host": ["{{baseUrl}}"],
+              "path": ["career-interests"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "page_size", "value": "50" }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
