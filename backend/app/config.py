@@ -20,11 +20,19 @@ def _env(key: str, default=None, type=str):
     return raw
 
 
+def _normalize_db_url(url: str) -> str:
+    """Ensure SQLAlchemy-compatible driver prefix (postgresql+psycopg://)."""
+    if url.startswith("postgresql://"):
+        return "postgresql+psycopg://" + url[len("postgresql://"):]
+    return url
+
+
 class Config:
     # database
-    DATABASE_URL: str = _env(
+    _raw_db_url: str = _env(
         "DATABASE_URL",
         default="postgresql+psycopg://mentoring:mentoring_dev_pw@localhost:5432/mentoring")
+    DATABASE_URL: str = _normalize_db_url(_raw_db_url)
     SQL_ECHO: bool = _env("SQL_ECHO", default=False, type=bool)
 
     # secrets / tokens

@@ -149,3 +149,4 @@ postman/environments/*.json
 .cache/
 *.tmp
 *.temp
+.neon
