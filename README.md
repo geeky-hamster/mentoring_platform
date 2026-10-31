@@ -369,6 +369,8 @@ http://localhost:8000/api/v1
 
 ## Database Schema
 
+> **Deep documentation:** [`docs/database/DATABASE-SPEC.md`](docs/database/DATABASE-SPEC.md) describes all 17 tables column-by-column, with lifecycles, join keys and invariants. [`docs/database/DFD.md`](docs/database/DFD.md) contains the level 0–2 data flow diagrams and a 60-flow catalogue; [`docs/database/CHARTS.md`](docs/database/CHARTS.md) defines 20 charts with runnable SQL.
+
 ### ER Diagram (Textual)
 
 ```
