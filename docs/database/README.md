@@ -7,6 +7,7 @@ Four documents, one source of truth. Start here.
 | [`DATABASE-SPEC.md`](./DATABASE-SPEC.md) | What does every table and column mean? How do rows move through their lifecycle? Which join keys are safe? | Developers, reviewers, DFD authors |
 | [`DFD.md`](./DFD.md) | Who sends what to whom? Which process writes which store? Where do the edge cases branch? | Architects, reviewers, new team members |
 | [`CHARTS.md`](./CHARTS.md) | Which metric is which, and what is the exact SQL behind every chart? | Analytics, frontend dashboards, PM |
+| [`diagrams/README.md`](./diagrams/README.md) | What does the ERD, context diagram and each process diagram look like? | Reviewers, report authors |
 | `README.md` (this file) | How the pieces fit and how to keep them honest. | Everyone |
 
 ---
@@ -38,7 +39,8 @@ src/schema.py  ──generates──▶  database/schema.sql  ──describes─
 | State machines | 5 | `DATABASE-SPEC.md` §8 |
 | Integrity invariants | 18 | `DATABASE-SPEC.md` §9 |
 | DFD levels | 0, 1, 2 | `DFD.md` §2–§6 |
-| Processes / data stores / flows | 11 / 17 / 60+ | `DFD.md` §3, §7 |
+| Rendered diagrams | 15 PNG (ERD, context, 11 processes, 2 level-2) | `diagrams/` |
+| Processes / data stores / flows | 11 / 17 / 99 | `DFD.md` §3, §7 |
 | Charts with runnable SQL | 20 | `CHARTS.md` §3 |
 | KPI definitions | 15 | `CHARTS.md` §2 |
 
@@ -67,13 +69,23 @@ Expected sanity values on a fresh seed: 10 users (1 admin, 3 students, 6 mentors
 
 ## Render the diagrams
 
-The Mermaid blocks are standalone. Render one at a time:
+The rendered diagrams are committed in [`diagrams/`](./diagrams) with their Mermaid sources; [`diagrams/README.md`](./diagrams/README.md) is the gallery and index.
+
+| Diagram | File |
+| --- | --- |
+| Full ERD (17 tables) | [`diagrams/erd.png`](./diagrams/erd.png) |
+| DFD level 0 — context | [`diagrams/dfd-level0.png`](./diagrams/dfd-level0.png) |
+| DFD level 1 — P1…P11 | [`diagrams/dfd-p01-identity.png`](./diagrams/dfd-p01-identity.png) … [`diagrams/dfd-p11-maintenance.png`](./diagrams/dfd-p11-maintenance.png) |
+| DFD level 2 — requests, scheduling | [`diagrams/dfd-level2-requests.png`](./diagrams/dfd-level2-requests.png), [`diagrams/dfd-level2-scheduling.png`](./diagrams/dfd-level2-scheduling.png) |
 
 ```bash
-npx -y @mermaid-js/mermaid-cli -i diagram.mmd -o diagram.png -w 2000 -b white
+npx -y @mermaid-js/mermaid-cli \
+  -i docs/database/diagrams/erd.mmd \
+  -o docs/database/diagrams/erd.png \
+  --size 2200 -b white -s 2
 ```
 
-Or paste a block into <https://mermaid.live>. For an editable ERD, import `database/schema.sql` into <https://dbdiagram.io> (SQL import) — no extra file needed.
+Mermaid CLI 12 renamed `-w` to `--size`, so older commands in blog posts will fail. Or paste a block into <https://mermaid.live>. For an editable ERD, import `database/schema.sql` into <https://dbdiagram.io> (SQL import) — no extra file needed.
 
 ---
 

@@ -1,0 +1,13 @@
+flowchart LR
+    A[Administrator]
+
+    P3(P3 Catalogue administration)
+
+    D4[(D4 skills)]
+    D5[(D5 career_interests)]
+    D16[(D16 audit_logs)]
+
+    A -->|F30 create, rename, deactivate| P3
+    P3 -->|F31 write skill rows| D4
+    P3 -->|F31 write interest rows| D5
+    P3 -->|F32 catalogue audit| D16

@@ -1,0 +1,23 @@
+flowchart TD
+    A[Mentor defines a slot or weekly recurrence] --> B[Expand recurrence into concrete windows in the mentor's time zone]
+    B --> C{Overlaps an existing slot for this mentor?}
+    C -- yes --> C1[Refuse: overlapping slot, EXCLUDE ex_slot_no_overlap]
+    C -- no --> D[(D12: insert slot, is_available true)]
+
+    E[Student opens booking dialog] --> F[Read open slots: is_available and not held]
+    F --> G{Slot still open at submit time?}
+    G -- no --> G1[Refuse: slot taken]
+    G -- yes --> H{Mentor or student already booked in this window?}
+    H -- yes --> H1[Refuse: scheduling conflict]
+    H -- no --> I[(D13: insert session scheduled, slot_id set)]
+    I --> J[(D15: notify mentor session_scheduled)]
+
+    K[Either party cancels] --> L{Session still scheduled?}
+    L -- no --> L1[Refuse: invalid state]
+    L -- yes --> M[(D13: cancelled, cancelled_by, reason)]
+    M --> N[(D15: notify counterpart session_cancelled)]
+
+    O[Mentor marks complete after start] --> P{Session scheduled and start time passed?}
+    P -- no --> P1[Refuse: invalid state or too early]
+    P -- yes --> Q[(D13: completed, notes optional)]
+    Q --> R[(D15: notify student feedback_requested)]

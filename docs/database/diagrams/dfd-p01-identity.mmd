@@ -1,0 +1,18 @@
+flowchart LR
+    S[Student]
+    M[Mentor]
+
+    P1(P1 Identity and access)
+
+    D1[(D1 users)]
+    D16[(D16 audit_logs)]
+    D17[(D17 refresh_tokens)]
+
+    S -->|F10 register, login, refresh, logout| P1
+    M -->|F10 register, login, refresh, logout| P1
+    P1 -->|F11 insert user row| D1
+    D1 -->|F12 credentials, role, status| P1
+    P1 <-->|F13 issue, rotate, revoke tokens| D17
+    P1 -->|F14 auth events| D16
+    P1 -->|F15 access token, refresh cookie| S
+    P1 -->|F15 access token, refresh cookie| M

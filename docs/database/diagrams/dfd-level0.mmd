@@ -1,0 +1,16 @@
+flowchart LR
+    S[Student]
+    M[Mentor]
+    A[Administrator]
+    T[Time / job scheduler]
+
+    SYS((0<br/>Mentoring<br/>platform))
+
+    S -->|F01 registration, profile, request, booking, feedback| SYS
+    M -->|F02 profile, expertise, availability, decisions, session notes, feedback| SYS
+    A -->|F03 review decisions, account status, catalogue changes| SYS
+    T -->|F04 expiry and reminder ticks| SYS
+
+    SYS -->|F05 recommendations, request and session status, notifications| S
+    SYS -->|F06 inbox, schedule, notifications| M
+    SYS -->|F07 work queue, metrics, reports, audit trail| A

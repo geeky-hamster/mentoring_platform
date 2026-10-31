@@ -1,0 +1,40 @@
+flowchart LR
+    A[Administrator]
+
+    P10(P10 Administration and reporting)
+
+    D1[(D1 users)]
+    D3[(D3 mentor_profiles)]
+    D4[(D4 skills)]
+    D5[(D5 career_interests)]
+    D10[(D10 mentoring_requests)]
+    D11[(D11 mentorships)]
+    D13[(D13 sessions)]
+    D14[(D14 feedback)]
+    D15[(D15 notifications)]
+    D16[(D16 audit_logs)]
+
+    D3 -->|F110 pending_review queue| P10
+    A -->|F111 approve, reject, suspend mentor| P10
+    P10 -->|F112 profile_status, reviewer, note| D3
+    P10 -->|F113 mentor_reviewed| D15
+    P10 -->|F114 review audit| D16
+
+    A -->|F115 suspend, reactivate, deactivate| P10
+    P10 -->|F116 account_status| D1
+    P10 -->|F117 account_status_changed| D15
+
+    A -->|F118 cancel stale request, end mentorship| P10
+    P10 -->|F119 status and reason| D10
+    P10 -->|F119 status and reason| D11
+
+    P10 -->|F140 catalogue overrides| D4
+    P10 -->|F140 catalogue overrides| D5
+
+    D1 -->|F130 read aggregates| P10
+    D10 -->|F130 read aggregates| P10
+    D11 -->|F130 read aggregates| P10
+    D13 -->|F130 read aggregates| P10
+    D14 -->|F130 read aggregates| P10
+    D16 -->|F131 read audit trail| P10
+    P10 -->|F132 KPIs, queues, CSV| A

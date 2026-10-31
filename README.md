@@ -369,113 +369,54 @@ http://localhost:8000/api/v1
 
 ## Database Schema
 
-> **Deep documentation:** [`docs/database/DATABASE-SPEC.md`](docs/database/DATABASE-SPEC.md) describes all 17 tables column-by-column, with lifecycles, join keys and invariants. [`docs/database/DFD.md`](docs/database/DFD.md) contains the level 0–2 data flow diagrams and a 60-flow catalogue; [`docs/database/CHARTS.md`](docs/database/CHARTS.md) defines 20 charts with runnable SQL.
+> **Deep documentation:** [`docs/database/DATABASE-SPEC.md`](docs/database/DATABASE-SPEC.md) describes all 17 tables column-by-column, with lifecycles, join keys and invariants. [`docs/database/DFD.md`](docs/database/DFD.md) contains the level 0–2 data flow diagrams and a 99-flow catalogue; [`docs/database/CHARTS.md`](docs/database/CHARTS.md) defines 20 charts with runnable SQL.
 
-### ER Diagram (Textual)
+### ER Diagram
 
-```
-+-----------------+       +--------------------+       +-------------------+
-|     users       | ----> |  student_profiles  |       |  mentor_profiles  |
-+-----------------+       +--------------------+       +-------------------+
-| user_id (PK)    |       | student_profile_id |       | mentor_profile_id |
-| email (UK)      |       | (PK)               |       | (PK)              |
-| full_name       |       | user_id (FK,UK)    |       | user_id (FK,UK)   |
-| password_hash   |       | programme_stage    |       | mentor_type       |
-| role            |       | grad_year          |       | professional_     |
-| account_status  |       | career_goals       |       |   title           |
-| created_at      |       | guidance_needs     |       | organisation      |
-+-----------------+       | bio                |       | experience_yrs    |
-       |                  | profile_completed  |       | graduation_year   |
-       |                  +--------------------+       | linkedin_url      |
-       |                          |                   | bio               |
-       |                  +-------v-------+            | is_available      |
-       |                  |student_skills |            | max_active_       |
-       |                  +---------------+            |   mentees         |
-       |                  | student_profile_|            | profile_status    |
-       |                  |     _id (FK)    |            | reviewed_by       |
-       |                  | skill_id (FK)   |            | reviewed_at       |
-       |                  | proficiency     |            +--------+----------+
-       |                  | is_focus        |                     |
-       |                  +-----------------+      +------------v------------+
-       |                          |                  |  mentor_expertise       |
-       |                  +-------v-------+          +-------------------------+
-       |                  |student_interests|        | mentor_profile_id (FK)  |
-       |                  +---------------+          | skill_id (FK)           |
-       |                  | student_profile_|        | expertise_level         |
-       |                  |     _id (FK)    |        +-------------------------+
-       |                  | interest_id(FK) |
-       |                  +-----------------+        +-------------------------+
-       |                                             |  mentor_interests       |
-       |                                             +-------------------------+
-       |                                             | mentor_profile_id (FK)  |
-       |                                             | interest_id (FK)        |
-       |                                             +-------------------------+
-       |
-       v
-+--------------------+       +-------------------+       +-------------------+
-|mentoring_requests  | ----> |  mentorships      | ----> |    sessions       |
-+--------------------+       +-------------------+       +-------------------+
-| request_id (PK)    |       | mentorship_id     |       | session_id (PK)   |
-| student_id (FK)    |       |  (PK)             |       | mentorship_id     |
-| mentor_id (FK)     |       | request_id (FK)   |       | (FK)              |
-| career_goal        |       | student_id (FK)   |       | student_id (FK)   |
-| message            |       | mentor_id (FK)    |       | mentor_id (FK)    |
-| status             |       | status            |       | slot_id (FK)      |
-| status_reason      |       | started_at        |       | scheduled_start   |
-| created_at         |       | ended_at          |       | scheduled_end     |
-| responded_at       |       | end_reason        |       | meeting_mode      |
-| expires_at         |       | ended_by (FK)     |       | meeting_link      |
-+--------------------+       +-------------------+       | status            |
-                                                      | notes             |
-                              +--------------------+  | cancel_reason     |
-                              |    feedback        |  | my_feedback_sub   |
-                              +--------------------+  +--------+----------+
-                              | feedback_id (PK)  |           |
-                              | session_id (FK)   |  +--------v----------+
-                              | submitted_by(FK)  |  |availability_slots |
-                              | rating (1-5)      |  +-------------------+
-                              | comments          |  | slot_id (PK)      |
-                              | created_at        |  | mentor_id (FK)    |
-                              +--------------------+  | start_time        |
-                                                      | end_time          |
-                              +--------------------+  | is_available      |
-                              |  notifications   |  | booked            |
-                              +--------------------+  | created_at        |
-                              | notification_id  |  +-------------------+
-                              | user_id (FK)     |
-                              | title            |  +-------------------+
-                              | message          |  |      skills       |
-                              | notification_type|  +-------------------+
-                              | related_ent_type |  | skill_id (PK)     |
-                              | related_ent_id   |  | skill_name (UK)   |
-                              | is_read          |  | category          |
-                              | read_at          |  | is_active         |
-                              | created_at       |  +-------------------+
-                              +--------------------+
-                                                      +-------------------+
-                              +--------------------+  | career_interests  |
-                              |refresh_tokens      |  +-------------------+
-                              +--------------------+  | interest_id (PK)  |
-                              | token_hash       |  | interest_name(UK) |
-                              | family_id        |  | description       |
-                              | user_id (FK)     |  | is_active         |
-                              | revoked_at       |  +-------------------+
-                              | revoked_reason   |
-                              | expires_at       |  +-------------------+
-                              | created_at       |  |  audit_logs       |
-                              +--------------------+  +-------------------+
-                                                      | log_id (PK)       |
-                              +--------------------+  | actor_user_id     |
-                              |password_reset_     |  | action            |
-                              |    tokens          |  | entity_type       |
-                              +--------------------+  | entity_id         |
-                              | token_hash       |  | metadata (JSONB)  |
-                              | user_id (FK)     |  | ip_address        |
-                              | expires_at       |  | created_at        |
-                              | used_at          |  +-------------------+
-                              | created_at       |
-                              +--------------------+
-```
+<p align="center">
+  <a href="docs/database/diagrams/erd.png">
+    <img src="docs/database/diagrams/erd.png" alt="Entity-relationship diagram: 17 tables with primary and foreign keys" width="100%">
+  </a>
+</p>
+
+The diagram above is rendered from [`docs/database/diagrams/erd.mmd`](docs/database/diagrams/erd.mmd) and matches [`database/schema.sql`](database/schema.sql) exactly. For a column-by-column description of every table — including lifecycles, join keys and invariants — see [`docs/database/DATABASE-SPEC.md`](docs/database/DATABASE-SPEC.md).
+
+> **Join-key warning:** `mentoring_requests.student_id` and `.mentor_id` store **`users.user_id`**, not `student_profile_id` / `mentor_profile_id`. Joining to the profile tables on those columns returns zero rows. The canonical joins are in `DATABASE-SPEC.md` §5.
+
+### Data Flow Diagrams
+
+**Level 0 — context**
+
+<p align="center">
+  <a href="docs/database/diagrams/dfd-level0.png">
+    <img src="docs/database/diagrams/dfd-level0.png" alt="Level 0 data flow diagram: students, mentors, administrators and the scheduler around the platform" width="100%">
+  </a>
+</p>
+
+**Level 1 — one diagram per process.** Each process is drawn separately with all of its external entities and data stores, so every arrow has one meaning. All fifteen rendered diagrams (ERD, context, P1–P11, two level-2 decompositions) are indexed in [`docs/database/diagrams/README.md`](docs/database/diagrams/README.md).
+
+| Process | Diagram | Writes |
+| --- | --- | --- |
+| **P1** Identity and access | [`dfd-p01-identity.png`](docs/database/diagrams/dfd-p01-identity.png) | D1, D16, D17 |
+| **P2** Profile management | [`dfd-p02-profiles.png`](docs/database/diagrams/dfd-p02-profiles.png) | D2, D3, D6–D9, D16 |
+| **P3** Catalogue administration | [`dfd-p03-catalogue.png`](docs/database/diagrams/dfd-p03-catalogue.png) | D4, D5, D16 |
+| **P4** Discovery and matching | [`dfd-p04-discovery.png`](docs/database/diagrams/dfd-p04-discovery.png) | read-only |
+| **P5** Request lifecycle | [`dfd-p05-requests.png`](docs/database/diagrams/dfd-p05-requests.png) | D10, D15, D16 |
+| **P6** Mentorship management | [`dfd-p06-mentorship.png`](docs/database/diagrams/dfd-p06-mentorship.png) | D11, D15, D16 |
+| **P7** Availability and scheduling | [`dfd-p07-scheduling.png`](docs/database/diagrams/dfd-p07-scheduling.png) | D12, D13, D15, D16 |
+| **P8** Feedback | [`dfd-p08-feedback.png`](docs/database/diagrams/dfd-p08-feedback.png) | D14, D16 |
+| **P9** Notification management | [`dfd-p09-notifications.png`](docs/database/diagrams/dfd-p09-notifications.png) | D15 |
+| **P10** Administration and reporting | [`dfd-p10-admin.png`](docs/database/diagrams/dfd-p10-admin.png) | D1, D3–D5, D10, D11, D15, D16 |
+| **P11** Scheduled maintenance | [`dfd-p11-maintenance.png`](docs/database/diagrams/dfd-p11-maintenance.png) | D10, D15 |
+
+The branching detail for the two processes with real decision trees is decomposed further:
+
+| Process | Level-2 diagram |
+| --- | --- |
+| Request creation, acceptance, decline, expiry | [`dfd-level2-requests.png`](docs/database/diagrams/dfd-level2-requests.png) |
+| Slot publication, booking, cancellation, completion | [`dfd-level2-scheduling.png`](docs/database/diagrams/dfd-level2-scheduling.png) |
+
+Every arrow is labelled with a flow ID from the catalogue; the payload, trigger and frequency of each are documented in [`docs/database/DFD.md`](docs/database/DFD.md) §7.
 
 ### Tables Summary (17 tables)
 
@@ -495,9 +436,9 @@ http://localhost:8000/api/v1
 | 12 | `mentorships` | Active/closed relationships | PK `mentorship_id`, FK `request_id`, `status` in {active,completed,ended} |
 | 13 | `sessions` | Booked meetings | PK `session_id`, FKs `mentorship_id`,`slot_id`, `status` in {scheduled,completed,cancelled}, `meeting_mode` in {online,phone,in_person} |
 | 14 | `feedback` | Session ratings (1-5) | PK `feedback_id`, UK (`session_id`,`submitted_by`), FK `session_id` |
-| 15 | `notifications` | User notifications | PK `notification_id`, FK `user_id`, `notification_type` enum (12 types) |
-| 16 | `refresh_tokens` | JWT refresh token families | PK `token_hash`, `family_id` for rotation/reuse detection |
-| 17 | `password_reset_tokens` | One-time reset tokens | PK `token_hash`, FK `user_id`, `used_at` tracking |
+| 15 | `notifications` | In-app notifications | PK `notification_id`, FK `user_id` CASCADE, `notification_type` in 12 enum values |
+| 16 | `audit_logs` | Append-only action trail | PK `audit_id`, FK `actor_user_id` SET NULL, `details` JSONB |
+| 17 | `refresh_tokens` | Rotating refresh-token families | PK `token_id`, UK `token_hash`, `family_id`, `revoked_reason` in 5 values |
 
 ---
 

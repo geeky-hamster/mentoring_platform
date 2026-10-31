@@ -1,0 +1,32 @@
+flowchart LR
+    S[Student]
+    M[Mentor]
+
+    P5(P5 Request lifecycle)
+    P6(P6 Mentorship management)
+
+    D2[(D2 student_profiles)]
+    D3[(D3 mentor_profiles)]
+    D10[(D10 mentoring_requests)]
+    D11[(D11 mentorships)]
+    D15[(D15 notifications)]
+    D16[(D16 audit_logs)]
+
+    S -->|F50 mentor_id, career_goal, message| P5
+    D2 -->|F51 profile completeness| P5
+    D3 -->|F52 status, availability, capacity| P5
+    D10 -->|F53 duplicate pending check| P5
+    D11 -->|F53 active mentorship check| P5
+    P5 -->|F54 insert pending, expires_at| D10
+    P5 -->|F55 request_received| D15
+
+    M -->|F56 accept or decline| P5
+    P5 -->|F57 status, responded_at, reason| D10
+    P5 -->|F58 accepted request| P6
+    P5 -->|F59 request_accepted or request_declined| D15
+
+    S -->|F60 cancel pending| P5
+    P5 -->|F61 status cancelled| D10
+    P5 -->|F62 request_cancelled| D15
+
+    P5 -->|F63 request audit| D16

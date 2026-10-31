@@ -1,0 +1,30 @@
+flowchart LR
+    S[Student]
+    M[Mentor]
+
+    P7(P7 Availability and scheduling)
+
+    D11[(D11 mentorships)]
+    D12[(D12 availability_slots)]
+    D13[(D13 sessions)]
+    D15[(D15 notifications)]
+    D16[(D16 audit_logs)]
+
+    M -->|F80 slot window or weekly recurrence| P7
+    P7 <-->|F81 overlap check, insert, edit, delete| D12
+    S -->|F82 slot_id, meeting mode| P7
+    D11 -->|F92 mentorship parties| P7
+    D12 -->|F83 is_available, start_time, hold| P7
+    P7 -->|F84 insert scheduled session| D13
+    P7 -->|F85 session_scheduled| D15
+
+    S -->|F86 cancel session| P7
+    M -->|F86 cancel session| P7
+    P7 -->|F87 cancelled, cancelled_by, reason| D13
+    P7 -->|F88 session_cancelled| D15
+
+    M -->|F89 complete, notes| P7
+    P7 -->|F90 completed, notes| D13
+    P7 -->|F91 feedback_requested| D15
+
+    P7 -->|F93 scheduling audit| D16

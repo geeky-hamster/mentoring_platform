@@ -7,7 +7,7 @@
 
 ## 1. How to read this document
 
-The DFD is split into a context diagram (level 0), four level-1 domain diagrams that compose into one, and two level-2 decompositions for the processes with real branching (requests and scheduling). Every arrow carries a flow ID (`F01`…) that appears in the flow catalogue in §6, so a diagram can be regenerated from the tables alone.
+The DFD is split into a context diagram (level 0), eleven level-1 process diagrams, and two level-2 decompositions for the processes with real branching (requests and scheduling). Every arrow carries a flow ID (`F01`…) that appears in the flow catalogue in §7, so a diagram can be regenerated from the tables alone.
 
 **Scope.** The platform's own data stores. Email delivery, the OAuth/identity provider and the browser are outside the system boundary; notifications are rows in D15 that a future delivery worker would read.
 
@@ -57,7 +57,7 @@ flowchart LR
 | **P6** | Mentorship management | Create mentorship on acceptance; complete or end it | accepted request, end/complete command | mentorship rows, notifications |
 | **P7** | Availability & scheduling | Publish slots, book/cancel/complete sessions, record notes | slot definitions, booking command | slot rows, session rows, notifications |
 | **P8** | Feedback | Record and read post-session ratings | rating, comment | feedback rows |
-| **P9** | Notification & audit | Persist in-app events and privileged-action audit | event from any process | notification rows, audit rows |
+| **P9** | Notification management | Persist in-app notifications and serve read state | event from any process | notification rows, unread count, notification page |
 | **P10** | Administration & reporting | Reviews, suspensions, catalogue overrides, analytics, exports | admin commands, read queries | status changes, aggregates, CSV |
 | **P11** | Scheduled maintenance | Expire stale requests, send session reminders | scheduler tick | request status changes, reminder rows |
 
@@ -87,258 +87,385 @@ P9 is drawn as a process because it has logic (deduplication of reminders, read-
 
 ---
 
-## 4. Level 1 — diagrams by domain
+## 4. Level 1 — one diagram per process
 
-The four diagrams below are lanes of the same level-1 diagram; together they cover all eleven processes and seventeen stores. Process and store IDs are stable across lanes.
+Level 1 is drawn as **eleven small diagrams**, one per process, rather than one large diagram. Each shows a single process with all of its external entities and data stores, so every arrow has exactly one meaning and the layout stays readable when rendered. Process and store IDs are stable across all diagrams and match §3.
 
-### 4.1 Identity, profiles and catalogue
+The Mermaid source for each diagram is a standalone file in [`diagrams/`](./diagrams) and is rendered to PNG for the README; `diagrams/README.md` is the index.
+
+### 4.1 P1 · Identity and access
+
+**Purpose.** Register, authenticate, refresh, log out and reset a password.
 
 ```mermaid
 flowchart LR
-    subgraph ENT[External entities]
-        S[Student]
-        M[Mentor]
-        A[Administrator]
-    end
+    S[Student]
+    M[Mentor]
 
-    subgraph PROC[Processes]
-        P1(P1 Identity and access)
-        P2(P2 Profile management)
-        P3(P3 Catalogue administration)
-    end
+    P1(P1 Identity and access)
 
-    subgraph STORE[Data stores]
-        D1[(D1 users)]
-        D2[(D2 student_profiles)]
-        D3[(D3 mentor_profiles)]
-        D4[(D4 skills)]
-        D5[(D5 career_interests)]
-        D6[(D6 student_skills)]
-        D7[(D7 mentor_expertise)]
-        D8[(D8 student_interests)]
-        D9[(D9 mentor_interests)]
-        D16[(D16 audit_logs)]
-        D17[(D17 refresh_tokens)]
-    end
+    D1[(D1 users)]
+    D16[(D16 audit_logs)]
+    D17[(D17 refresh_tokens)]
 
-    S -->|F10 register, login| P1
-    M -->|F10 register, login| P1
-    P1 -->|F11 insert user| D1
-    P1 <-->|F12 verify credentials and status| D1
-    P1 -->|F13 issue, rotate, revoke| D17
+    S -->|F10 register, login, refresh, logout| P1
+    M -->|F10 register, login, refresh, logout| P1
+    P1 -->|F11 insert user row| D1
+    D1 -->|F12 credentials, role, status| P1
+    P1 <-->|F13 issue, rotate, revoke tokens| D17
     P1 -->|F14 auth events| D16
-    P1 -->|F15 token and session state| S
+    P1 -->|F15 access token, refresh cookie| S
+    P1 -->|F15 access token, refresh cookie| M
+```
+
+**Notes.** Registration writes D1 and returns an access token plus a rotating refresh token (D17). Login re-reads the password hash and `account_status`; a suspended account authenticates but is refused at authorisation. Every auth event is appended to D16, with a nullable actor for system actions.
+
+### 4.2 P2 · Profile management
+
+**Purpose.** Maintain student and mentor profiles plus their skill and interest links.
+
+```mermaid
+flowchart LR
+    S[Student]
+    M[Mentor]
+
+    P2(P2 Profile management)
+
+    D2[(D2 student_profiles)]
+    D3[(D3 mentor_profiles)]
+    D4[(D4 skills)]
+    D5[(D5 career_interests)]
+    D6[(D6 student_skills)]
+    D7[(D7 mentor_expertise)]
+    D8[(D8 student_interests)]
+    D9[(D9 mentor_interests)]
+    D16[(D16 audit_logs)]
 
     S -->|F20 profile, skills, interests| P2
     M -->|F21 professional profile, expertise| P2
-    P2 -->|F22 upsert| D2
-    P2 -->|F23 upsert| D3
+    P2 -->|F22 upsert, profile_completed| D2
+    P2 -->|F23 upsert, profile_status| D3
     P2 -->|F24 replace links| D6
     P2 -->|F24 replace links| D8
     P2 -->|F25 replace links| D7
     P2 -->|F25 replace links| D9
-    P2 <-->|F26 read catalogue| D4
-    P2 <-->|F26 read catalogue| D5
-    P2 -->|F27 profile changes| D16
-
-    A -->|F30 create, update, deactivate| P3
-    P3 -->|F31 write catalogue| D4
-    P3 -->|F31 write catalogue| D5
-    P3 -->|F32 catalogue changes| D16
-
-    D4 -.->|F33 catalogue read| P2
-    D5 -.->|F33 catalogue read| P2
+    D4 -->|F26 active catalogue| P2
+    D5 -->|F26 active catalogue| P2
+    P2 -->|F27 profile audit| D16
 ```
 
-### 4.2 Discovery, requests and mentorship
+**Notes.** Skill and interest edits are replace-all: rows in D6–D9 are deleted and reinserted in one transaction, so the link tables always mirror the submitted form. `profile_completed` flips when the required fields and at least one skill or interest exist. A mentor submit moves `profile_status` to `pending_review`.
+
+### 4.3 P3 · Catalogue administration
+
+**Purpose.** Curate the controlled vocabularies that both sides of the marketplace select from.
 
 ```mermaid
 flowchart LR
-    subgraph ENT[External entities]
-        S[Student]
-        M[Mentor]
-        T[Scheduler]
-    end
+    A[Administrator]
 
-    subgraph PROC[Processes]
-        P4(P4 Discovery and matching)
-        P5(P5 Request lifecycle)
-        P6(P6 Mentorship management)
-        P11(P11 Scheduled maintenance)
-    end
+    P3(P3 Catalogue administration)
 
-    subgraph STORE[Data stores]
-        D2[(D2 student_profiles)]
-        D3[(D3 mentor_profiles)]
-        D6[(D6 student_skills)]
-        D7[(D7 mentor_expertise)]
-        D8[(D8 student_interests)]
-        D9[(D9 mentor_interests)]
-        D10[(D10 mentoring_requests)]
-        D11[(D11 mentorships)]
-        D12[(D12 availability_slots)]
-        D15[(D15 notifications)]
-        D16[(D16 audit_logs)]
-    end
+    D4[(D4 skills)]
+    D5[(D5 career_interests)]
+    D16[(D16 audit_logs)]
 
-    S -->|F40 search, filters| P4
-    P4 <-->|F41 approved, available mentors| D3
-    P4 <-->|F42 expertise| D7
-    P4 <-->|F42 interests| D9
-    P4 <-->|F43 own profile signals| D2
-    P4 <-->|F43 skills and interests| D6
-    P4 <-->|F43 interests| D8
-    P4 <-->|F44 open slot counts| D12
-    P4 -->|F46 ranked mentors| S
+    A -->|F30 create, rename, deactivate| P3
+    P3 -->|F31 write skill rows| D4
+    P3 -->|F31 write interest rows| D5
+    P3 -->|F32 catalogue audit| D16
+```
 
-    S -->|F50 create request| P5
-    P5 <-->|F51 profile gate| D2
-    P5 <-->|F52 mentor gate| D3
-    P5 <-->|F53 duplicate and capacity checks| D10
-    P5 <-->|F53 existing mentorship check| D11
-    P5 -->|F54 insert pending| D10
+**Notes.** Catalogue rows are never hard-deleted: `is_active=false` retires a skill or interest while historical links in D6–D9 keep resolving. Each change writes an audit row with the before/after payload.
+
+### 4.4 P4 · Discovery and matching
+
+**Purpose.** Rank discoverable mentors for a student and explain why each one matched.
+
+```mermaid
+flowchart LR
+    S[Student]
+
+    P4(P4 Discovery and matching)
+
+    D2[(D2 student_profiles)]
+    D3[(D3 mentor_profiles)]
+    D4[(D4 skills)]
+    D5[(D5 career_interests)]
+    D6[(D6 student_skills)]
+    D7[(D7 mentor_expertise)]
+    D8[(D8 student_interests)]
+    D9[(D9 mentor_interests)]
+    D10[(D10 mentoring_requests)]
+    D11[(D11 mentorships)]
+    D12[(D12 availability_slots)]
+
+    S -->|F40 search text, filters, sort| P4
+    D3 -->|F41 approved, available mentors| P4
+    D7 -->|F42 expertise levels| P4
+    D9 -->|F42 mentor interests| P4
+    D2 -->|F43 stage, goals| P4
+    D6 -->|F43 focus skills| P4
+    D8 -->|F43 interests| P4
+    D4 -->|F33 skill dictionary| P4
+    D5 -->|F33 interest dictionary| P4
+    D10 -->|F44 existing requests| P4
+    D11 -->|F44 active mentorships| P4
+    D12 -->|F44 open slot counts| P4
+    P4 -->|F46 ranked mentors, match reasons| S
+```
+
+**Notes.** Read-only. Only `approved` mentors with `is_available=true` enter scoring; the score blends skill overlap, interest overlap, stage fit and open-slot count. The response carries match reasons so the UI can explain the ranking instead of showing a black-box list.
+
+### 4.5 P5 · Request lifecycle
+
+**Purpose.** Create, cancel, accept, decline and expire mentoring requests.
+
+```mermaid
+flowchart LR
+    S[Student]
+    M[Mentor]
+
+    P5(P5 Request lifecycle)
+    P6(P6 Mentorship management)
+
+    D2[(D2 student_profiles)]
+    D3[(D3 mentor_profiles)]
+    D10[(D10 mentoring_requests)]
+    D11[(D11 mentorships)]
+    D15[(D15 notifications)]
+    D16[(D16 audit_logs)]
+
+    S -->|F50 mentor_id, career_goal, message| P5
+    D2 -->|F51 profile completeness| P5
+    D3 -->|F52 status, availability, capacity| P5
+    D10 -->|F53 duplicate pending check| P5
+    D11 -->|F53 active mentorship check| P5
+    P5 -->|F54 insert pending, expires_at| D10
     P5 -->|F55 request_received| D15
 
     M -->|F56 accept or decline| P5
-    P5 -->|F57 update status and responded_at| D10
+    P5 -->|F57 status, responded_at, reason| D10
     P5 -->|F58 accepted request| P6
-    P5 -->|F59 decision event| D15
+    P5 -->|F59 request_accepted or request_declined| D15
 
     S -->|F60 cancel pending| P5
-    P5 -->|F61 mark cancelled| D10
-    P5 -->|F62 event| D15
+    P5 -->|F61 status cancelled| D10
+    P5 -->|F62 request_cancelled| D15
 
-    P6 -->|F66 insert active mentorship| D11
-    P6 <-->|F67 capacity check| D3
-    P6 <-->|F68 read request| D10
-    P6 -->|F69 mentorship_ended| D15
-    P6 -->|F70 audit| D16
-
-    T -->|F120 tick| P11
-    P11 <-->|F121 select expired pending| D10
-    P11 -->|F122 mark expired| D10
-    P11 -->|F123 request_expired| D15
+    P5 -->|F63 request audit| D16
 ```
 
-### 4.3 Scheduling and feedback
+**Notes.** The service checks D2/D3 first, then relies on the partial unique indexes (`uq_pending_request`, `uq_active_pair`) so the same checks are race-proof. Acceptance emits F58 to P6 inside the same transaction; a failure leaves the request `pending`.
+
+### 4.6 P6 · Mentorship management
+
+**Purpose.** Create the mentorship on acceptance, then complete or end it.
 
 ```mermaid
 flowchart LR
-    subgraph ENT[External entities]
-        S[Student]
-        M[Mentor]
-        T[Scheduler]
-    end
+    S[Student]
+    M[Mentor]
 
-    subgraph PROC[Processes]
-        P7(P7 Availability and scheduling)
-        P8(P8 Feedback)
-        P11(P11 Scheduled maintenance)
-    end
+    P5(P5 Request lifecycle)
+    P6(P6 Mentorship management)
 
-    subgraph STORE[Data stores]
-        D11[(D11 mentorships)]
-        D12[(D12 availability_slots)]
-        D13[(D13 sessions)]
-        D14[(D14 feedback)]
-        D15[(D15 notifications)]
-        D16[(D16 audit_logs)]
-    end
+    D3[(D3 mentor_profiles)]
+    D10[(D10 mentoring_requests)]
+    D11[(D11 mentorships)]
+    D15[(D15 notifications)]
+    D16[(D16 audit_logs)]
 
-    M -->|F80 publish, edit, delete slot| P7
-    P7 <-->|F81 overlap check and write| D12
-    S -->|F82 book slot| P7
-    P7 <-->|F83 slot availability and hold| D12
+    P5 -->|F58 accepted request| P6
+    D10 -->|F68 request status and parties| P6
+    D3 -->|F67 max_active_mentees, row locked| P6
+    D11 -->|F71 active mentee count| P6
+    P6 -->|F66 insert active mentorship| D11
+
+    S -->|F64 complete or end| P6
+    M -->|F64 complete or end| P6
+    P6 -->|F65 status, ended_at, ended_by, reason| D11
+    P6 -->|F69 mentorship_ended| D15
+    P6 -->|F70 mentorship audit| D16
+```
+
+**Notes.** Insertion is guarded by `trg_mentorship_requires_accepted` and `trg_mentorship_capacity`; the service takes `FOR UPDATE` on the mentor profile first. Completion and ending both set `ended_at`, so `ck_mentorship_ended` stays satisfied, and both notify the counterpart.
+
+### 4.7 P7 · Availability and scheduling
+
+**Purpose.** Publish availability, book sessions, record notes, cancel and complete.
+
+```mermaid
+flowchart LR
+    S[Student]
+    M[Mentor]
+
+    P7(P7 Availability and scheduling)
+
+    D11[(D11 mentorships)]
+    D12[(D12 availability_slots)]
+    D13[(D13 sessions)]
+    D15[(D15 notifications)]
+    D16[(D16 audit_logs)]
+
+    M -->|F80 slot window or weekly recurrence| P7
+    P7 <-->|F81 overlap check, insert, edit, delete| D12
+    S -->|F82 slot_id, meeting mode| P7
+    D11 -->|F92 mentorship parties| P7
+    D12 -->|F83 is_available, start_time, hold| P7
     P7 -->|F84 insert scheduled session| D13
     P7 -->|F85 session_scheduled| D15
 
     S -->|F86 cancel session| P7
     M -->|F86 cancel session| P7
-    P7 -->|F87 mark cancelled, reason| D13
+    P7 -->|F87 cancelled, cancelled_by, reason| D13
     P7 -->|F88 session_cancelled| D15
 
-    M -->|F89 complete session and notes| P7
-    P7 -->|F90 mark completed, notes| D13
+    M -->|F89 complete, notes| P7
+    P7 -->|F90 completed, notes| D13
     P7 -->|F91 feedback_requested| D15
-    P7 <-->|F92 read mentorship parties| D11
 
-    S -->|F95 rating and comment| P8
-    M -->|F95 rating and comment| P8
-    P8 <-->|F96 verify completed session and participant| D13
-    P8 -->|F97 insert feedback| D14
-    P8 -->|F98 read feedback history| D14
-    P8 -->|F99 audit| D16
-
-    T -->|F124 reminder tick| P11
-    P11 <-->|F125 sessions starting within 24h| D13
-    P11 -->|F126 session_reminder| D15
+    P7 -->|F93 scheduling audit| D16
 ```
 
-### 4.4 Administration, notifications and reporting
+**Notes.** Slot writes are protected by `ex_slot_no_overlap`, bookings by the two partial GiST exclusion constraints. A slot is held when a `scheduled` session references it (`uq_session_slot_booked`), so booking never mutates `is_available`; cancelling frees the window automatically.
+
+### 4.8 P8 · Feedback
+
+**Purpose.** Record and read post-session ratings from both participants.
 
 ```mermaid
 flowchart LR
-    subgraph ENT[External entities]
-        A[Administrator]
-        U[Any authenticated user]
-    end
+    S[Student]
+    M[Mentor]
 
-    subgraph PROC[Processes]
-        P9(P9 Notification and audit)
-        P10(P10 Administration and reporting)
-    end
+    P8(P8 Feedback)
 
-    subgraph STORE[Data stores]
-        D1[(D1 users)]
-        D3[(D3 mentor_profiles)]
-        D4[(D4 skills)]
-        D5[(D5 career_interests)]
-        D10[(D10 mentoring_requests)]
-        D11[(D11 mentorships)]
-        D13[(D13 sessions)]
-        D14[(D14 feedback)]
-        D15[(D15 notifications)]
-        D16[(D16 audit_logs)]
-    end
+    D13[(D13 sessions)]
+    D14[(D14 feedback)]
+    D16[(D16 audit_logs)]
 
-    P10 <-->|F110 read review queue| D3
+    S -->|F95 rating 1-5, comments| P8
+    M -->|F95 rating 1-5, comments| P8
+    D13 -->|F96 session status, participant IDs| P8
+    P8 -->|F97 insert feedback| D14
+    D14 -->|F98 feedback history| P8
+    P8 -->|F94 own feedback history| S
+    P8 -->|F94 own feedback history| M
+    P8 -->|F99 feedback audit| D16
+```
+
+**Notes.** One rating per participant per session (`uq_feedback_once`). The service verifies the submitter is a party to a `completed` session; the database cannot express that rule, so it is a service check rather than a constraint.
+
+### 4.9 P9 · Notification management
+
+**Purpose.** Persist in-app events and serve the notification page.
+
+```mermaid
+flowchart LR
+    U[Any authenticated user]
+    P5(P5 Request lifecycle)
+    P6(P6 Mentorship management)
+    P7(P7 Availability and scheduling)
+    P8(P8 Feedback)
+    P10(P10 Administration and reporting)
+    P11(P11 Scheduled maintenance)
+
+    P9(P9 Notification management)
+
+    D15[(D15 notifications)]
+
+    P5 -->|F100 event payload| P9
+    P6 -->|F100 event payload| P9
+    P7 -->|F100 event payload| P9
+    P8 -->|F100 event payload| P9
+    P10 -->|F100 event payload| P9
+    P11 -->|F100 event payload| P9
+    P9 -->|F101 insert notification| D15
+
+    U -->|F102 list, mark read, mark all| P9
+    P9 -->|F103 is_read, read_at| D15
+    P9 -->|F104 page of notifications, unread count| U
+```
+
+**Notes.** Every other process calls the notification service with one of twelve typed events; P9 persists one row per recipient. Read state is one-way: `is_read` and `read_at` move together, enforced by `ck_notification_read`.
+
+### 4.10 P10 · Administration and reporting
+
+**Purpose.** Review mentors, change account status, curate catalogues, report and export.
+
+```mermaid
+flowchart LR
+    A[Administrator]
+
+    P10(P10 Administration and reporting)
+
+    D1[(D1 users)]
+    D3[(D3 mentor_profiles)]
+    D4[(D4 skills)]
+    D5[(D5 career_interests)]
+    D10[(D10 mentoring_requests)]
+    D11[(D11 mentorships)]
+    D13[(D13 sessions)]
+    D14[(D14 feedback)]
+    D15[(D15 notifications)]
+    D16[(D16 audit_logs)]
+
+    D3 -->|F110 pending_review queue| P10
     A -->|F111 approve, reject, suspend mentor| P10
-    P10 -->|F112 status, reviewer, note| D3
+    P10 -->|F112 profile_status, reviewer, note| D3
     P10 -->|F113 mentor_reviewed| D15
-    P10 -->|F114 audit| D16
+    P10 -->|F114 review audit| D16
 
     A -->|F115 suspend, reactivate, deactivate| P10
     P10 -->|F116 account_status| D1
     P10 -->|F117 account_status_changed| D15
 
     A -->|F118 cancel stale request, end mentorship| P10
-    P10 -->|F119 update request or mentorship| D10
-    P10 -->|F119 update request or mentorship| D11
-
-    P10 <-->|F130 read aggregates| D1
-    P10 <-->|F130 read aggregates| D10
-    P10 <-->|F130 read aggregates| D11
-    P10 <-->|F130 read aggregates| D13
-    P10 <-->|F130 read aggregates| D14
-    P10 <-->|F131 read audit trail| D16
-    P10 -->|F132 KPIs, queue, CSV| A
+    P10 -->|F119 status and reason| D10
+    P10 -->|F119 status and reason| D11
 
     P10 -->|F140 catalogue overrides| D4
     P10 -->|F140 catalogue overrides| D5
 
-    U -->|F150 list, mark read, mark all| P9
-    P9 <-->|F151 read and update read state| D15
-    P9 -->|F152 unread count and page| U
-    P5 -.->|F100 notify event| P9
-    P6 -.->|F100 notify event| P9
-    P7 -.->|F100 notify event| P9
-    P8 -.->|F100 notify event| P9
-    P10 -.->|F100 notify event| P9
-    P11 -.->|F100 notify event| P9
+    D1 -->|F130 read aggregates| P10
+    D10 -->|F130 read aggregates| P10
+    D11 -->|F130 read aggregates| P10
+    D13 -->|F130 read aggregates| P10
+    D14 -->|F130 read aggregates| P10
+    D16 -->|F131 read audit trail| P10
+    P10 -->|F132 KPIs, queues, CSV| A
 ```
 
----
+**Notes.** Review decisions require a reviewer and timestamp (`ck_mentor_reviewed`). Reporting is read-only and runs against D1/D10/D11/D13/D14; an export streams the same query result as CSV, so dashboard and export never disagree.
 
+### 4.11 P11 · Scheduled maintenance
+
+**Purpose.** Expire stale requests and remind participants about imminent sessions.
+
+```mermaid
+flowchart LR
+    T[Job scheduler]
+
+    P11(P11 Scheduled maintenance)
+
+    D10[(D10 mentoring_requests)]
+    D13[(D13 sessions)]
+    D15[(D15 notifications)]
+
+    T -->|F120 expiry tick| P11
+    D10 -->|F121 pending past expires_at| P11
+    P11 -->|F122 expire| D10
+    P11 -->|F123 request_expired| D15
+
+    T -->|F124 reminder tick| P11
+    D13 -->|F125 sessions starting within 24 h| P11
+    P11 -->|F126 session_reminder| D15
+```
+
+**Notes.** Both jobs are idempotent: expiry filters `status='pending'`, reminders check for an existing `session_reminder` for that user and session. A second tick in the same window therefore writes nothing.
+
+---
 ## 5. Level 2 — request lifecycle (P5)
 
 ```mermaid
@@ -460,11 +587,15 @@ Every arrow in §2–§4 appears here with its payload. This table is the machin
 | F60 | Student → P5 | cancel command, optional reason | cancellation | per request |
 | F61 | P5 → D10 | status cancelled | cancellation | per request |
 | F62 | P5 → D15 | request_cancelled | cancellation | per request |
+| F63 | P5 → D16 | request audit (create, accept, decline, cancel) | state change | per request |
+| F64 | Student/Mentor → P6 | complete or end command, optional reason | mentoring relationship ends | per mentorship |
+| F65 | P6 → D11 | status completed/ended, ended_at, ended_by, end_reason | complete / end | per mentorship |
 | F66 | P6 → D11 | mentorship row (active, started_at) | acceptance | per request |
-| F67 | P6 ↔ D3 | max_active_mentees (row locked), active count | capacity guard | per acceptance |
+| F67 | P6 ↔ D3 | max_active_mentees (row locked) | capacity guard | per acceptance |
 | F68 | P6 ↔ D10 | request status and parties | creation check | per acceptance |
 | F69 | P6 → D15 | mentorship_ended | complete / end | per mentorship |
 | F70 | P6 → D16 | mentorship audit | complete / end | per mentorship |
+| F71 | P6 ↔ D11 | active mentee count for the mentor | capacity guard | per acceptance |
 | F80 | Mentor → P7 | slot date/time or recurrence rule, time zone | slot create/edit/delete | weekly |
 | F81 | P7 ↔ D12 | slot rows, overlap check | slot write | weekly |
 | F82 | Student → P7 | slot_id, meeting mode, link | booking | per session |
@@ -478,6 +609,8 @@ Every arrow in §2–§4 appears here with its payload. This table is the machin
 | F90 | P7 → D13 | status completed, notes | completion | per session |
 | F91 | P7 → D15 | feedback_requested | completion | per session |
 | F92 | P7 ↔ D11 | mentorship parties | booking authorization | per session |
+| F93 | P7 → D16 | scheduling audit (book, cancel, complete) | state change | per session |
+| F94 | P8 → Student/Mentor | own feedback history | page load | per view |
 | F95 | Student/Mentor → P8 | rating 1–5, comments | feedback submit | per session |
 | F96 | P8 ↔ D13 | session status, participant IDs | validation | per feedback |
 | F97 | P8 → D14 | feedback row | submit | per feedback |
@@ -509,9 +642,6 @@ Every arrow in §2–§4 appears here with its payload. This table is the machin
 | F131 | P10 ↔ D16 | audit page queries | admin view | per view |
 | F132 | P10 → Admin | KPI tiles, queue, CSV file | response | per view |
 | F140 | P10 → D4/D5 | catalogue overrides | admin action | ad hoc |
-| F150 | User → P9 | list, mark read, mark all | page action | per view |
-| F151 | P9 ↔ D15 | read/update read state | page action | per view |
-| F152 | P9 → User | unread count, notification page | response | per view |
 
 ---
 
@@ -557,12 +687,22 @@ Notes:
 
 ## 10. Regenerating the diagrams
 
-Each mermaid block above is standalone. To render:
+Every block above is also stored as a standalone `.mmd` source in [`diagrams/`](./diagrams) and rendered to a PNG with Mermaid CLI 12. From the repository root:
 
 ```bash
-# extract one block to a .mmd file, then
-npx -y @mermaid-js/mermaid-cli -i dfd-level0.mmd -o dfd-level0.png -w 1600 -b white
+# one diagram
+npx -y @mermaid-js/mermaid-cli \
+  -i docs/database/diagrams/dfd-p05-requests.mmd \
+  -o docs/database/diagrams/dfd-p05-requests.png \
+  --size 2200 -b white -s 2
+
+# all of them (bash)
+for f in docs/database/diagrams/*.mmd; do
+  npx -y @mermaid-js/mermaid-cli -i "$f" -o "${f%.mmd}.png" --size 2200 -b white -s 2
+done
 ```
+
+Mermaid CLI 12 renamed `-w` to `--size`; `-s 2` renders at 2× device scale so the PNG stays sharp when zoomed. The PNGs are committed, so GitHub and the README work without a render step.
 
 Mermaid does not have a native DFD shape set; the mapping used here is:
 

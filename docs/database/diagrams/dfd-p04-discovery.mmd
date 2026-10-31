@@ -1,0 +1,30 @@
+flowchart LR
+    S[Student]
+
+    P4(P4 Discovery and matching)
+
+    D2[(D2 student_profiles)]
+    D3[(D3 mentor_profiles)]
+    D4[(D4 skills)]
+    D5[(D5 career_interests)]
+    D6[(D6 student_skills)]
+    D7[(D7 mentor_expertise)]
+    D8[(D8 student_interests)]
+    D9[(D9 mentor_interests)]
+    D10[(D10 mentoring_requests)]
+    D11[(D11 mentorships)]
+    D12[(D12 availability_slots)]
+
+    S -->|F40 search text, filters, sort| P4
+    D3 -->|F41 approved, available mentors| P4
+    D7 -->|F42 expertise levels| P4
+    D9 -->|F42 mentor interests| P4
+    D2 -->|F43 stage, goals| P4
+    D6 -->|F43 focus skills| P4
+    D8 -->|F43 interests| P4
+    D4 -->|F33 skill dictionary| P4
+    D5 -->|F33 interest dictionary| P4
+    D10 -->|F44 existing requests| P4
+    D11 -->|F44 active mentorships| P4
+    D12 -->|F44 open slot counts| P4
+    P4 -->|F46 ranked mentors, match reasons| S

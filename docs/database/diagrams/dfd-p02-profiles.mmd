@@ -1,0 +1,27 @@
+flowchart LR
+    S[Student]
+    M[Mentor]
+
+    P2(P2 Profile management)
+
+    D2[(D2 student_profiles)]
+    D3[(D3 mentor_profiles)]
+    D4[(D4 skills)]
+    D5[(D5 career_interests)]
+    D6[(D6 student_skills)]
+    D7[(D7 mentor_expertise)]
+    D8[(D8 student_interests)]
+    D9[(D9 mentor_interests)]
+    D16[(D16 audit_logs)]
+
+    S -->|F20 profile, skills, interests| P2
+    M -->|F21 professional profile, expertise| P2
+    P2 -->|F22 upsert, profile_completed| D2
+    P2 -->|F23 upsert, profile_status| D3
+    P2 -->|F24 replace links| D6
+    P2 -->|F24 replace links| D8
+    P2 -->|F25 replace links| D7
+    P2 -->|F25 replace links| D9
+    D4 -->|F26 active catalogue| P2
+    D5 -->|F26 active catalogue| P2
+    P2 -->|F27 profile audit| D16

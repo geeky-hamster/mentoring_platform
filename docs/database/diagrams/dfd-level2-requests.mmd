@@ -1,0 +1,27 @@
+flowchart TD
+    A[Student submits request] --> B{Profile complete?}
+    B -- no --> B1[Refuse: profile incomplete]
+    B -- yes --> C{Mentor approved and available?}
+    C -- no --> C1[Refuse: mentor not accepting]
+    C -- yes --> D{Active mentorship or pending request for this pair?}
+    D -- yes --> D1[Refuse: duplicate]
+    D -- no --> E{Active mentees below capacity?}
+    E -- no --> E1[Refuse: mentor at capacity]
+    E -- yes --> F[(D10: insert request pending, expires in 14 days)]
+    F --> G[(D15: notify mentor request_received)]
+    G --> H{Mentor decision before expiry}
+
+    H -- accept --> I[Lock mentor row, re-check capacity]
+    I --> J[(D10: accepted, responded_at now)]
+    J --> K[(D11: insert mentorship active, started_at now)]
+    K --> L[(D15: notify student request_accepted)]
+
+    H -- decline --> M[(D10: declined, responded_at now, reason)]
+    M --> N[(D15: notify student request_declined)]
+
+    H -- no response --> O[P11 job: expires_at passed]
+    O --> P[(D10: expired)]
+    P --> Q[(D15: notify student request_expired)]
+
+    A2[Student cancels while pending] --> R[(D10: cancelled)]
+    R --> S[(D15: notify mentor request_cancelled)]

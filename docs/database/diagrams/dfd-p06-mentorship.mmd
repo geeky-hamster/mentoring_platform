@@ -1,0 +1,24 @@
+flowchart LR
+    S[Student]
+    M[Mentor]
+
+    P5(P5 Request lifecycle)
+    P6(P6 Mentorship management)
+
+    D3[(D3 mentor_profiles)]
+    D10[(D10 mentoring_requests)]
+    D11[(D11 mentorships)]
+    D15[(D15 notifications)]
+    D16[(D16 audit_logs)]
+
+    P5 -->|F58 accepted request| P6
+    D10 -->|F68 request status and parties| P6
+    D3 -->|F67 max_active_mentees, row locked| P6
+    D11 -->|F71 active mentee count| P6
+    P6 -->|F66 insert active mentorship| D11
+
+    S -->|F64 complete or end| P6
+    M -->|F64 complete or end| P6
+    P6 -->|F65 status, ended_at, ended_by, reason| D11
+    P6 -->|F69 mentorship_ended| D15
+    P6 -->|F70 mentorship audit| D16

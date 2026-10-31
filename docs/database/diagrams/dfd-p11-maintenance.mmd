@@ -1,0 +1,17 @@
+flowchart LR
+    T[Job scheduler]
+
+    P11(P11 Scheduled maintenance)
+
+    D10[(D10 mentoring_requests)]
+    D13[(D13 sessions)]
+    D15[(D15 notifications)]
+
+    T -->|F120 expiry tick| P11
+    D10 -->|F121 pending past expires_at| P11
+    P11 -->|F122 expire| D10
+    P11 -->|F123 request_expired| D15
+
+    T -->|F124 reminder tick| P11
+    D13 -->|F125 sessions starting within 24 h| P11
+    P11 -->|F126 session_reminder| D15

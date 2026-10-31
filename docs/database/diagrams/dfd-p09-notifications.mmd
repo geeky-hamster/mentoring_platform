@@ -1,0 +1,24 @@
+flowchart LR
+    U[Any authenticated user]
+    P5(P5 Request lifecycle)
+    P6(P6 Mentorship management)
+    P7(P7 Availability and scheduling)
+    P8(P8 Feedback)
+    P10(P10 Administration and reporting)
+    P11(P11 Scheduled maintenance)
+
+    P9(P9 Notification management)
+
+    D15[(D15 notifications)]
+
+    P5 -->|F100 event payload| P9
+    P6 -->|F100 event payload| P9
+    P7 -->|F100 event payload| P9
+    P8 -->|F100 event payload| P9
+    P10 -->|F100 event payload| P9
+    P11 -->|F100 event payload| P9
+    P9 -->|F101 insert notification| D15
+
+    U -->|F102 list, mark read, mark all| P9
+    P9 -->|F103 is_read, read_at| D15
+    P9 -->|F104 page of notifications, unread count| U

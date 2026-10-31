@@ -1,0 +1,129 @@
+erDiagram
+    users ||--o| student_profiles : "1:0..1"
+    users ||--o| mentor_profiles : "1:0..1"
+    users ||--o{ mentoring_requests : "sends (student_id)"
+    users ||--o{ mentoring_requests : "receives (mentor_id)"
+    users ||--o{ availability_slots : "publishes"
+    users ||--o{ feedback : "submits"
+    users ||--o{ notifications : "receives"
+    users ||--o{ refresh_tokens : "owns"
+    users ||--o{ audit_logs : "acts"
+
+    student_profiles ||--o{ student_skills : "has"
+    skills ||--o{ student_skills : "tagged"
+    student_profiles ||--o{ student_interests : "pursues"
+    career_interests ||--o{ student_interests : "tagged"
+
+    mentor_profiles ||--o{ mentor_expertise : "claims"
+    skills ||--o{ mentor_expertise : "tagged"
+    mentor_profiles ||--o{ mentor_interests : "guides"
+    career_interests ||--o{ mentor_interests : "tagged"
+
+    mentoring_requests ||--o| mentorships : "converts to"
+    mentorships ||--o{ sessions : "contains"
+    availability_slots ||--o{ sessions : "booked as"
+    sessions ||--o{ feedback : "receives"
+
+    users {
+        uuid user_id PK
+        varchar email UK
+        varchar role
+        varchar account_status
+        timestamptz created_at
+    }
+    student_profiles {
+        uuid student_profile_id PK
+        uuid user_id UK
+        varchar programme_stage
+        boolean profile_completed
+    }
+    mentor_profiles {
+        uuid mentor_profile_id PK
+        uuid user_id UK
+        varchar profile_status
+        boolean is_available
+        int max_active_mentees
+    }
+    mentoring_requests {
+        uuid request_id PK
+        uuid student_id FK
+        uuid mentor_id FK
+        varchar status
+        timestamptz responded_at
+        timestamptz expires_at
+    }
+    mentorships {
+        uuid mentorship_id PK
+        uuid request_id UK
+        varchar status
+        timestamptz started_at
+        timestamptz ended_at
+    }
+    availability_slots {
+        uuid slot_id PK
+        uuid mentor_id FK
+        timestamptz start_time
+        timestamptz end_time
+        boolean is_available
+    }
+    sessions {
+        uuid session_id PK
+        uuid mentorship_id FK
+        uuid slot_id FK
+        varchar status
+        timestamptz scheduled_start
+    }
+    feedback {
+        uuid feedback_id PK
+        uuid session_id FK
+        uuid submitted_by FK
+        int rating
+    }
+    notifications {
+        uuid notification_id PK
+        uuid user_id FK
+        varchar notification_type
+        boolean is_read
+    }
+    refresh_tokens {
+        uuid token_id PK
+        uuid user_id FK
+        uuid family_id
+        timestamptz revoked_at
+    }
+    audit_logs {
+        uuid audit_id PK
+        uuid actor_user_id FK
+        varchar action
+        jsonb details
+    }
+    skills {
+        uuid skill_id PK
+        varchar skill_name UK
+        varchar category
+        boolean is_active
+    }
+    career_interests {
+        uuid interest_id PK
+        varchar interest_name UK
+        boolean is_active
+    }
+    student_skills {
+        uuid student_profile_id PK
+        uuid skill_id PK
+        varchar proficiency_level
+        boolean is_focus
+    }
+    mentor_expertise {
+        uuid mentor_profile_id PK
+        uuid skill_id PK
+        varchar expertise_level
+    }
+    student_interests {
+        uuid student_profile_id PK
+        uuid interest_id PK
+    }
+    mentor_interests {
+        uuid mentor_profile_id PK
+        uuid interest_id PK
+    }

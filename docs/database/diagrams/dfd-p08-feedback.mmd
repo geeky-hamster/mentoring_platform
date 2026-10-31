@@ -1,0 +1,18 @@
+flowchart LR
+    S[Student]
+    M[Mentor]
+
+    P8(P8 Feedback)
+
+    D13[(D13 sessions)]
+    D14[(D14 feedback)]
+    D16[(D16 audit_logs)]
+
+    S -->|F95 rating 1-5, comments| P8
+    M -->|F95 rating 1-5, comments| P8
+    D13 -->|F96 session status, participant IDs| P8
+    P8 -->|F97 insert feedback| D14
+    D14 -->|F98 feedback history| P8
+    P8 -->|F94 own feedback history| S
+    P8 -->|F94 own feedback history| M
+    P8 -->|F99 feedback audit| D16
